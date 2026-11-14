@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Skrbnik — Tenis center Obrul</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;font-family:Inter,system-ui,sans-serif;background:#fbf8f3;color:#1c1c1a}
+  .wrap{max-width:900px;margin:0 auto;padding:32px 20px}
+  h1{font-family:"Bricolage Grotesque";font-size:30px;margin:0 0 4px}
+  .muted{color:#6d685f}
+  .box{background:#fff;border:1px solid #e7e1d8;border-radius:16px;padding:22px;margin-top:22px}
+  input{border:1.5px solid #e7e1d8;border-radius:10px;padding:10px 12px;font:15px Inter;width:100%;box-sizing:border-box;margin-bottom:10px}
+  button{border:0;border-radius:999px;padding:10px 18px;font:600 14px Inter;cursor:pointer;background:#c8562e;color:#fff}
+  button.ghost{background:transparent;border:1.5px solid #e7e1d8;color:#1c1c1a}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:10px 8px;border-bottom:1px solid #eee7dc;vertical-align:top}
+  th{font-weight:600;color:#6d685f;font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+  tr.day td{background:#f3eee6;font-weight:600}
+  .del{background:none;color:#b3261e;padding:0}
+  .err{color:#b3261e;min-height:20px;font-size:14px}
+  .top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div><h1>Rezervacije</h1><div class="muted">ŠRD Straža · Tenis center Obrul</div></div>
+    <div><a href="./" class="muted">← Na stran</a> <button class="ghost" id="logout" style="display:none;margin-left:10px">Odjava</button></div>
+  </div>
+
+  <div class="box" id="loginBox" style="max-width:360px">
+    <form id="login">
+      <input id="email" type="email" placeholder="E-pošta" required autocomplete="username">
+      <input id="pass" type="password" placeholder="Geslo" required autocomplete="current-password">
+      <div class="err" id="lErr"></div>
+      <button type="submit">Prijava</button>
+    </form>
+  </div>
+
+  <div class="box" id="listBox" style="display:none">
+    <div class="top" style="margin-bottom:12px">
+      <label class="muted"><input type="checkbox" id="showPast" style="width:auto;margin:0 6px 0 0">Pokaži pretekle</label>
+      <button class="ghost" id="refresh">Osveži</button>
+    </div>
+    <table><thead><tr><th>Ura</th><th>Igrišče</th><th>Ime</th><th>Telefon</th><th>Igralci</th><th>Opomba</th><th></th></tr></thead><tbody id="rows"></tbody></table>
+    <p class="muted" id="empty" style="display:none">Ni rezervacij.</p>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script>
+const sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+const $ = id => document.getElementById(id);
+const pad = n => String(n).padStart(2,"0");
+const DOW = ["nedelja","ponedeljek","torek","sreda","četrtek","petek","sobota"];
+const today = () => { const d=new Date(); return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); };
+
+async function show(){
+  const { data:{ session } } = await sb.auth.getSession();
+  $("loginBox").style.display = session ? "none" : "block";
+  $("listBox").style.display = session ? "block" : "none";
+  $("logout").style.display = session ? "inline-block" : "none";
+  if(session) load();
+}
+
+async function load(){
+  let q = sb.from("bookings").select("id,date,court,hour,name,phone,players,note").order("date").order("hour").order("court");
+  if(!$("showPast").checked) q = q.gte("date", today());
+  const { data, error } = await q;
+  const tb = $("rows"); tb.innerHTML = "";
+  if(error){ tb.innerHTML = '<tr><td colspan="7">Napaka pri nalaganju.</td></tr>'; console.log(error); return; }
+  $("empty").style.display = data.length ? "none" : "block";
+  let last = "";
+  data.forEach(b=>{
+    if(b.date!==last){
+      last=b.date; const d=new Date(b.date+"T12:00:00");
+      const tr=document.createElement("tr"); tr.className="day";
+      const td=document.createElement("td"); td.colSpan=7; td.textContent=DOW[d.getDay()]+", "+d.getDate()+". "+(d.getMonth()+1)+". "+d.getFullYear();
+      tr.appendChild(td); tb.appendChild(tr);
+    }
+    const tr=document.createElement("tr");
+    [pad(b.hour)+":00–"+(b.hour+1===24?"24":pad(b.hour+1))+":00", "Igrišče "+b.court, b.name, b.phone, b.players, b.note||""].forEach(v=>{
+      const td=document.createElement("td"); td.textContent=v; tr.appendChild(td);
+    });
+    const td=document.createElement("td"); const x=document.createElement("button"); x.className="del"; x.textContent="Izbriši";
+    let armed=false;
+    x.onclick=async()=>{
+      if(!armed){ armed=true; x.textContent="Potrdi brisanje"; setTimeout(()=>{armed=false;x.textContent="Izbriši";},3000); return; }
+      const { error } = await sb.from("bookings").delete().eq("id", b.id);
+      if(error){ x.textContent="Napaka"; console.log(error); } else load();
+    };
+    td.appendChild(x); tr.appendChild(td); tb.appendChild(tr);
+  });
+}
+
+$("login").addEventListener("submit", async e=>{
+  e.preventDefault(); $("lErr").textContent="";
+  const { error } = await sb.auth.signInWithPassword({ email:$("email").value, password:$("pass").value });
+  if(error) $("lErr").textContent="Napačna e-pošta ali geslo."; else show();
+});
+$("logout").onclick = async()=>{ await sb.auth.signOut(); show(); };
+$("refresh").onclick = load;
+$("showPast").onchange = load;
+show();
+</script>
+</body>
+</html>

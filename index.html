@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="ŠRD Straža – Tenis center Obrul. Spletna rezervacija teniških igrišč.">
+<title>ŠRD Straža — Tenis center Obrul</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --clay:#c8562e; --clay-dark:#a5421f; --clay-soft:#f6e3d8;
+    --green:#1f3d2b; --green-2:#2d5a3f; --line:#e7e1d8;
+    --bg:#fbf8f3; --card:#ffffff; --ink:#1c1c1a; --muted:#6d685f;
+    --free:#eef6ef; --free-ink:#2d5a3f; --taken:#efeae3; --mine:#fde7c9;
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+  h1,h2,h3{font-family:"Bricolage Grotesque",Inter,sans-serif;line-height:1.1;margin:0}
+  a{color:inherit}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+
+  /* header */
+  header.top{position:sticky;top:0;z-index:20;background:rgba(251,248,243,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  header.top .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{display:flex;align-items:center;gap:10px;font-family:"Bricolage Grotesque";font-weight:800;font-size:20px;text-decoration:none}
+  .logo svg{flex:none}
+  nav a{text-decoration:none;font-weight:500;color:var(--muted);margin-left:22px;font-size:15px}
+  nav a:hover{color:var(--ink)}
+  .btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:999px;padding:12px 22px;font:600 15px Inter,sans-serif;cursor:pointer;text-decoration:none;transition:.15s}
+  .btn-clay{background:var(--clay);color:#fff}
+  .btn-clay:hover{background:var(--clay-dark)}
+  .btn-ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink)}
+  .btn-ghost:hover{border-color:var(--ink)}
+  @media(max-width:700px){nav a:not(.btn){display:none}}
+
+  /* hero */
+  .hero{background:var(--green);color:#f3efe6;position:relative;overflow:hidden}
+  .hero .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center;padding-top:72px;padding-bottom:80px}
+  .hero h1{font-size:clamp(40px,6vw,72px);font-weight:800;letter-spacing:-.02em}
+  .hero h1 em{font-style:normal;color:#f2a27f}
+  .hero p.lead{font-size:18px;max-width:520px;color:#cfd8cf;margin:20px 0 30px}
+  .hero .stats{display:flex;gap:34px;margin-top:40px}
+  .hero .stats b{display:block;font-family:"Bricolage Grotesque";font-size:30px;color:#fff}
+  .hero .stats span{font-size:13px;color:#a9b8ab}
+  .court-art{width:100%;max-width:420px;justify-self:end;filter:drop-shadow(0 20px 40px rgba(0,0,0,.35))}
+  @media(max-width:860px){.hero .wrap{grid-template-columns:1fr}.court-art{display:none}}
+
+  section{padding:72px 0}
+  .eyebrow{font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--clay);margin-bottom:10px}
+  .sec-title{font-size:clamp(28px,4vw,40px);font-weight:700;margin-bottom:12px}
+  .sec-sub{color:var(--muted);max-width:620px;margin:0 0 32px}
+
+  /* booking */
+  .booking{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px}
+  .days{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin}
+  .day{flex:none;width:68px;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:8px 0;text-align:center;cursor:pointer;font:inherit}
+  .day small{display:block;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+  .day b{display:block;font-family:"Bricolage Grotesque";font-size:22px}
+  .day.active{background:var(--green);border-color:var(--green);color:#fff}
+  .day.active small{color:#b9c9bc}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;margin:18px 0 14px;font-size:13px;color:var(--muted)}
+  .legend i{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:6px}
+  .grid-wrap{overflow-x:auto}
+  table.grid{border-collapse:separate;border-spacing:6px;width:100%;min-width:400px}
+  .grid th{font:600 14px Inter;text-align:left;padding:4px 6px;color:var(--ink)}
+  .grid th small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+  .grid td.time{font:600 14px Inter;color:var(--muted);white-space:nowrap;width:70px;padding-right:4px}
+  .slot{width:100%;height:46px;border-radius:10px;border:0;font:500 13px Inter;cursor:pointer;transition:.12s;padding:0 8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .slot.free{background:var(--free);color:var(--free-ink)}
+  .slot.free:hover{background:var(--green-2);color:#fff}
+  .slot.taken{background:var(--taken);color:#9b958b;cursor:default}
+  .slot.mine{background:var(--mine);color:#8a4b12;font-weight:600}
+  .slot.past{background:transparent;color:#c9c3b8;cursor:default;border:1px dashed var(--line)}
+  .notice{font-size:13px;color:var(--muted);margin-top:14px}
+  .banner{background:var(--clay-soft);color:#7b3417;border-radius:12px;padding:12px 16px;font-size:14px;margin-bottom:16px;display:none}
+
+  /* my bookings */
+  .mine-list{margin-top:26px;display:none}
+  .mine-list h3{font-size:20px;margin-bottom:10px}
+  .mrow{display:flex;justify-content:space-between;align-items:center;gap:12px;border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-bottom:8px;background:#fff}
+  .mrow .t{font-weight:600}
+  .mrow .s{font-size:13px;color:var(--muted)}
+  .link-btn{background:none;border:0;color:var(--clay);font:600 14px Inter;cursor:pointer}
+
+  /* courts & prices */
+  .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+  @media(max-width:860px){.cards{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px}
+  .card .sw{height:110px;border-radius:10px;margin-bottom:18px;position:relative;overflow:hidden}
+  .card h3{font-size:22px;margin-bottom:6px}
+  .card p{color:var(--muted);margin:0;font-size:15px}
+  .price-card{border-radius:var(--radius);padding:28px;border:1px solid var(--line);background:#fff;max-width:520px}
+  .price-card.feat{background:var(--green);color:#f3efe6;border-color:var(--green)}
+  .price-card h3{font-size:22px;margin-bottom:16px}
+  .prow{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(128,128,128,.2);font-size:15px}
+  .prow:last-child{border:0}
+  .prow b{font-family:"Bricolage Grotesque";font-size:18px}
+
+  /* contact */
+  .contact{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+  @media(max-width:760px){.contact{grid-template-columns:1fr}}
+  .info-item{display:flex;gap:14px;margin-bottom:18px}
+  .info-item .ic{width:42px;height:42px;border-radius:12px;background:var(--clay-soft);display:grid;place-items:center;flex:none}
+  .info-item b{display:block}
+  .info-item span,.info-item a{color:var(--muted);font-size:15px}
+  .hours{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:24px}
+
+  footer{background:var(--green);color:#a9b8ab;padding:28px 0;font-size:14px}
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+
+  /* modal */
+  .overlay{position:fixed;inset:0;background:rgba(20,24,20,.55);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+  .overlay.open{display:flex}
+  .modal{background:#fff;border-radius:20px;max-width:440px;width:100%;padding:28px;box-shadow:0 30px 60px rgba(0,0,0,.25)}
+  .modal h3{font-size:24px;margin-bottom:4px}
+  .modal .when{color:var(--muted);margin-bottom:20px}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+  .field input,.field select{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;font:15px Inter;background:#fff}
+  .field input:focus,.field select:focus{outline:none;border-color:var(--green-2)}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .modal .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+  .err{color:#b3261e;font-size:14px;min-height:20px}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:999px;font-size:14px;transition:.3s;z-index:60}
+  .toast.show{transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#zacetek">
+      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><circle cx="15" cy="15" r="13" fill="#d7e34a"/><path d="M5 8c6 3 6 11 0 14M25 8c-6 3-6 11 0 14" stroke="#fff" stroke-width="2" fill="none"/></svg>
+      <span style="line-height:1.05">ŠRD Straža<small style="display:block;font:500 12px Inter;color:var(--muted)">Tenis center Obrul</small></span>
+    </a>
+    <nav>
+      <a href="#igrisca">Igrišča</a>
+      <a href="#cenik">Cenik</a>
+      <a href="#kontakt">Kontakt</a>
+      <a class="btn btn-clay" href="#rezervacija" style="padding:9px 18px;margin-left:22px;color:#fff">Rezerviraj</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero" id="zacetek">
+  <div class="wrap">
+    <div>
+      <div style="font:600 14px Inter;letter-spacing:.12em;text-transform:uppercase;color:#f2a27f;margin-bottom:14px">Športno-rekreacijsko društvo Straža</div>
+      <h1>Tenis center<br><em>Obrul</em></h1>
+      <p class="lead">Rezerviraj termin na enem od naših dveh igrišč. Izberi dan, uro in igrišče – brez klicanja, brez čakanja.</p>
+      <a class="btn btn-clay" href="#rezervacija">Rezerviraj termin →</a>
+      <a class="btn btn-ghost" href="#cenik" style="color:#f3efe6;border-color:rgba(255,255,255,.3);margin-left:8px">Cenik</a>
+      <div class="stats">
+        <div><b>2</b><span>igrišči</span></div>
+        <div><b>7–24</b><span>vsak dan</span></div>
+        <div><b>10 €</b><span>na uro</span></div>
+      </div>
+    </div>
+    <svg class="court-art" viewBox="0 0 300 400" aria-hidden="true">
+      <rect x="10" y="10" width="280" height="380" rx="8" fill="#c8562e"/>
+      <g stroke="#fff" stroke-width="3" fill="none">
+        <rect x="40" y="40" width="220" height="320"/>
+        <line x1="70" y1="40" x2="70" y2="360"/><line x1="230" y1="40" x2="230" y2="360"/>
+        <line x1="70" y1="120" x2="230" y2="120"/><line x1="70" y1="280" x2="230" y2="280"/>
+        <line x1="150" y1="120" x2="150" y2="280"/>
+        <line x1="150" y1="40" x2="150" y2="48"/><line x1="150" y1="352" x2="150" y2="360"/>
+      </g>
+      <line x1="28" y1="200" x2="272" y2="200" stroke="#1c1c1a" stroke-width="5"/>
+      <circle cx="200" cy="150" r="9" fill="#d7e34a"/>
+    </svg>
+  </div>
+</div>
+
+<section id="rezervacija">
+  <div class="wrap">
+    <div class="eyebrow">Rezervacija</div>
+    <h2 class="sec-title">Izberi termin</h2>
+    <p class="sec-sub">Termini trajajo 1 uro. Klikni prost termin in vpiši svoje podatke. Rezervacijo lahko v tem brskalniku prekličeš spodaj pod »Moje rezervacije«, sicer pokliči 031 528 978.</p>
+
+    <div class="booking">
+      <div class="banner" id="banner"></div>
+      <div class="days" id="days"></div>
+      <div class="legend">
+        <span><i style="background:var(--free)"></i>Prosto</span>
+        <span><i style="background:var(--taken)"></i>Zasedeno</span>
+        <span><i style="background:var(--mine)"></i>Tvoja rezervacija</span>
+      </div>
+      <div class="grid-wrap"><table class="grid" id="grid"></table></div>
+      <p class="notice" id="status">Nalagam termine …</p>
+
+      <div class="mine-list" id="mineList">
+        <h3>Moje rezervacije</h3>
+        <div id="mineRows"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="igrisca" style="background:#f3eee6">
+  <div class="wrap">
+    <div class="eyebrow">Igrišča</div>
+    <h2 class="sec-title">Dve igrišči</h2>
+    <p class="sec-sub">Obe igrišči imata reflektorje, zato lahko igraš tudi zvečer.</p>
+    <div class="cards">
+      <div class="card">
+        <div class="sw" style="background:#c8562e"><svg width="100%" height="100%" viewBox="0 0 200 110" preserveAspectRatio="none"><g stroke="#fff" stroke-width="2" fill="none" opacity=".8"><rect x="20" y="15" width="160" height="80"/><line x1="100" y1="15" x2="100" y2="95"/><line x1="20" y1="55" x2="180" y2="55"/></g></svg></div>
+        <h3>Igrišče 1</h3><p>Z reflektorji</p>
+      </div>
+      <div class="card">
+        <div class="sw" style="background:#b54e2a"><svg width="100%" height="100%" viewBox="0 0 200 110" preserveAspectRatio="none"><g stroke="#fff" stroke-width="2" fill="none" opacity=".8"><rect x="20" y="15" width="160" height="80"/><line x1="100" y1="15" x2="100" y2="95"/><line x1="20" y1="55" x2="180" y2="55"/></g></svg></div>
+        <h3>Igrišče 2</h3><p>Z reflektorji</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cenik">
+  <div class="wrap">
+    <div class="eyebrow">Cenik</div>
+    <h2 class="sec-title">Enostavne cene</h2>
+    <p class="sec-sub">Cena velja za igrišče na uro, ne glede na število igralcev.</p>
+    <div class="price-card feat">
+      <h3>Igrišče 1 in 2</h3>
+      <div class="prow"><span>Najem igrišča</span><b>10 € / uro</b></div>
+      <div class="prow"><span>Reflektorji (ponoči)</span><b>+1,5 € / uro</b></div>
+    </div>
+  </div>
+</section>
+
+<section id="kontakt" style="background:#f3eee6">
+  <div class="wrap contact">
+    <div>
+      <div class="eyebrow">Kontakt</div>
+      <h2 class="sec-title">Pridi na igrišče</h2>
+      <div class="info-item" style="margin-top:24px"><div class="ic">📞</div><div><b>Telefon</b><a href="tel:+38631528978">031 528 978</a></div></div>
+      <div class="info-item"><div class="ic">🎾</div><div><b>Društvo</b><span>Športno-rekreacijsko društvo Straža</span></div></div>
+    </div>
+    <div class="hours">
+      <h3 style="font-size:22px;margin-bottom:12px">Delovni čas</h3>
+      <div class="prow"><span>Vsak dan</span><b>7:00 – 24:00</b></div>
+      <p class="notice">Za vprašanja pokliči 031 528 978.</p>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap"><span>© 2026 ŠRD Straža · Tenis center Obrul</span><span>Igraj. Ponovi.</span></div></footer>
+
+<div class="overlay" id="overlay" role="dialog" aria-modal="true">
+  <form class="modal" id="form">
+    <h3 id="mTitle">Rezervacija</h3>
+    <div class="when" id="mWhen"></div>
+    <div id="adminBox"></div>
+    <div id="fields">
+      <div class="field"><label for="fName">Ime in priimek</label><input id="fName" required maxlength="60" autocomplete="name"></div>
+      <div class="row2">
+        <div class="field"><label for="fPhone">Telefon</label><input id="fPhone" required maxlength="20" autocomplete="tel" inputmode="tel"></div>
+        <div class="field"><label for="fPlayers">Igralci</label><select id="fPlayers"><option>2</option><option>3</option><option>4</option></select></div>
+      </div>
+      <div class="field"><label for="fNote">Opomba (neobvezno)</label><input id="fNote" maxlength="120"></div>
+    </div>
+    <div class="err" id="mErr"></div>
+    <div class="actions">
+      <button type="button" class="btn btn-ghost" id="mCancel">Zapri</button>
+      <button type="submit" class="btn btn-clay" id="mSubmit">Potrdi rezervacijo</button>
+    </div>
+  </form>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
