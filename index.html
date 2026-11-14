@@ -65,7 +65,8 @@
   .legend{display:flex;gap:18px;flex-wrap:wrap;margin:18px 0 14px;font-size:13px;color:var(--muted)}
   .legend i{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:6px}
   .grid-wrap{overflow-x:auto}
-  table.grid{border-collapse:separate;border-spacing:6px;width:100%;min-width:400px}
+  table.grid{border-collapse:separate;border-spacing:6px;width:100%;min-width:0;table-layout:fixed}
+  @media(max-width:520px){.booking{padding:16px}table.grid{border-spacing:4px}.grid td.time,.grid th:first-child{width:46px}.grid td.time{font-size:13px}.slot{height:42px;padding:0 4px}.day{width:58px}}
   .grid th{font:600 14px Inter;text-align:left;padding:4px 6px;color:var(--ink)}
   .grid th small{display:block;font-weight:400;color:var(--muted);font-size:12px}
   .grid td.time{font:600 14px Inter;color:var(--muted);white-space:nowrap;width:70px;padding-right:4px}
@@ -272,7 +273,7 @@
 <div class="toast" id="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js"></script>
-<script src="app.js"></script>
+<script src="config.js?v=3"></script>
+<script src="app.js?v=3"></script>
 </body>
 </html>
