@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Galerija – ŠRD Straža, Tenis center Obrul: igrišča, lokal, parkirišče in okolica.">
+<link rel="icon" href="lOGO.jpg">
+<title>Galerija — ŠRD Straža, Tenis center Obrul</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--clay:#c8562e;--clay-dark:#a5421f;--green:#1f3d2b;--line:#e7e1d8;--bg:#fbf8f3;--ink:#1c1c1a;--muted:#6d685f}
+  *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+  h1,h2,h3{font-family:"Bricolage Grotesque",Inter,sans-serif;line-height:1.1;margin:0}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+  header.top{position:sticky;top:0;z-index:20;background:rgba(251,248,243,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  header.top .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{display:flex;align-items:center;gap:10px;font-family:"Bricolage Grotesque";font-weight:800;font-size:20px;text-decoration:none;color:inherit}
+  nav a{text-decoration:none;font-weight:500;color:var(--muted);margin-left:22px;font-size:15px}
+  nav a:hover,nav a.on{color:var(--ink)}
+  .btn{display:inline-flex;border-radius:999px;padding:9px 18px;font:600 15px Inter;text-decoration:none;background:var(--clay);color:#fff!important}
+  @media(max-width:700px){nav a:not(.btn):not(.on){display:none}}
+  .head{padding:56px 0 24px}
+  .eyebrow{font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--clay);margin-bottom:10px}
+  .head h1{font-size:clamp(32px,5vw,52px)}
+  .head p{color:var(--muted);max-width:620px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 26px}
+  .chip{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:8px 16px;font:500 14px Inter;cursor:pointer}
+  .chip.on{background:var(--green);border-color:var(--green);color:#fff}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;padding-bottom:72px}
+  .item{position:relative;aspect-ratio:4/3;border-radius:14px;overflow:hidden;background:#efeae3;cursor:zoom-in;border:0;padding:0}
+  .item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
+  .item:hover img{transform:scale(1.04)}
+  .item span{position:absolute;left:0;right:0;bottom:0;padding:22px 12px 10px;color:#fff;font:500 14px Inter;text-align:left;background:linear-gradient(transparent,rgba(0,0,0,.6))}
+  .empty{grid-column:1/-1;border:1.5px dashed var(--line);border-radius:16px;padding:48px 20px;text-align:center;color:var(--muted)}
+  .lb{position:fixed;inset:0;background:rgba(10,12,10,.92);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+  .lb.open{display:flex}
+  .lb img{max-width:100%;max-height:82vh;border-radius:10px;object-fit:contain}
+  .lb .cap{color:#e8e4dc;text-align:center;margin-top:12px;font-size:15px}
+  .lb button{position:absolute;background:rgba(255,255,255,.12);border:0;color:#fff;width:46px;height:46px;border-radius:50%;font-size:22px;cursor:pointer}
+  .lb .x{top:16px;right:16px}.lb .p{left:16px;top:50%}.lb .n{right:16px;top:50%}
+  footer{background:var(--green);color:#a9b8ab;padding:28px 0;font-size:14px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="./">
+      <img src="lOGO.jpg" alt="ŠRD Straža" style="height:46px;width:auto;border-radius:8px">
+      <span style="line-height:1.05">ŠRD Straža<small style="display:block;font:500 12px Inter;color:var(--muted)">Tenis center Obrul</small></span>
+    </a>
+    <nav>
+      <a href="./#igrisca">Igrišča</a>
+      <a href="galerija.html" class="on">Galerija</a>
+      <a href="./#cenik">Cenik</a>
+      <a href="./#kontakt">Kontakt</a>
+      <a class="btn" href="./#rezervacija" style="margin-left:22px">Rezerviraj</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap head">
+  <div class="eyebrow">Galerija</div>
+  <h1>Poglej, kje igraš</h1>
+  <p>Igrišča, lokal, parkirišče in okolica Tenis centra Obrul.</p>
+</div>
+
+<div class="wrap">
+  <div class="chips" id="chips"></div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<footer><div class="wrap">© 2026 ŠRD Straža · Tenis center Obrul · 031 528 978</div></footer>
+
+<div class="lb" id="lb">
+  <button class="x" id="lbX" aria-label="Zapri">×</button>
+  <button class="p" id="lbP" aria-label="Prejšnja">‹</button>
+  <div><img id="lbImg" alt=""><div class="cap" id="lbCap"></div></div>
+  <button class="n" id="lbN" aria-label="Naslednja">›</button>
+</div>
+
+<script>
+// Slike so naštete v galerija.json:  [{ "src": "galerija/igrisce1.jpg", "naslov": "Igrišče 1", "kategorija": "Igrišča" }, ...]
+const CATS = ["Vse", "Igrišča", "Lokal", "Parkirišče", "Okolica"];
+let photos = [], cat = "Vse", shown = [], idx = 0;
+const $ = id => document.getElementById(id);
+
+function renderChips() {
+  $("chips").innerHTML = "";
+  CATS.forEach(c => {
+    const b = document.createElement("button");
+    b.className = "chip" + (c === cat ? " on" : ""); b.textContent = c;
+    b.onclick = () => { cat = c; renderChips(); renderGrid(); };
+    $("chips").appendChild(b);
+  });
+}
+
+function renderGrid() {
+  const g = $("grid"); g.innerHTML = "";
+  shown = photos.filter(p => cat === "Vse" || p.kategorija === cat);
+  if (!shown.length) {
+    const e = document.createElement("div"); e.className = "empty";
+    e.textContent = cat === "Vse" ? "Slike prihajajo kmalu." : "V kategoriji »" + cat + "« še ni slik.";
+    g.appendChild(e); return;
+  }
+  shown.forEach((p, i) => {
+    const b = document.createElement("button"); b.className = "item"; b.type = "button";
+    const im = document.createElement("img"); im.src = p.src; im.alt = p.naslov || ""; im.loading = "lazy";
+    b.appendChild(im);
+    if (p.naslov) { const s = document.createElement("span"); s.textContent = p.naslov; b.appendChild(s); }
+    b.onclick = () => openLb(i);
+    g.appendChild(b);
+  });
+}
+
+function openLb(i) { idx = (i + shown.length) % shown.length; const p = shown[idx]; $("lbImg").src = p.src; $("lbImg").alt = p.naslov || ""; $("lbCap").textContent = p.naslov || ""; $("lb").classList.add("open"); }
+function closeLb() { $("lb").classList.remove("open"); }
+$("lbX").onclick = closeLb; $("lbP").onclick = () => openLb(idx - 1); $("lbN").onclick = () => openLb(idx + 1);
+$("lb").addEventListener("click", e => { if (e.target.id === "lb") closeLb(); });
+document.addEventListener("keydown", e => {
+  if (!$("lb").classList.contains("open")) return;
+  if (e.key === "Escape") closeLb(); if (e.key === "ArrowLeft") openLb(idx - 1); if (e.key === "ArrowRight") openLb(idx + 1);
+});
+
+renderChips(); renderGrid();
+fetch("galerija.json?v=" + Date.now()).then(r => r.ok ? r.json() : []).then(d => { photos = Array.isArray(d) ? d : []; renderGrid(); }).catch(() => {});
+</script>
+</body>
+</html>
