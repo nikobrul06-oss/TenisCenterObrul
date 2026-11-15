@@ -1,0 +1,183 @@
+// Prevodi strani: slovenščina (izvirnik), angleščina, nemščina.
+// Besedilo na strani ostane v slovenščini; ta skripta ga ob izbiri jezika zamenja s prevodom.
+(function () {
+  const D = [
+    ["Športno-rekreacijsko društvo Straža", "Straža Sports and Recreation Club", "Sport- und Freizeitverein Straža"],
+    ["Igrišča", "Courts", "Plätze"], ["Galerija", "Gallery", "Galerie"], ["Novice", "News", "Neuigkeiten"],
+    ["Cenik", "Prices", "Preise"], ["Kontakt", "Contact", "Kontakt"], ["Rezerviraj termin", "Book a court", "Platz buchen"],
+    ["Rezerviraj", "Book", "Buchen"],
+    ["Rezerviraj termin na enem od naših dveh igrišč. Izberi dan, uro in igrišče – brez klicanja, brez čakanja.",
+     "Book a slot on one of our two courts. Pick a day, time and court – no calls, no waiting.",
+     "Buche einen Termin auf einem unserer zwei Plätze. Tag, Uhrzeit und Platz wählen – ohne Anruf, ohne Warten."],
+    ["igrišči", "courts", "Plätze"], ["vsak dan", "every day", "täglich"], ["na uro", "per hour", "pro Stunde"],
+    ["Rezervacija", "Booking", "Buchung"], ["Izberi termin", "Choose a time", "Termin wählen"],
+    ["Termin lahko rezerviraš na pol ure natančno, od 30 minut do 3 ur, tudi kot ponavljajoč termin vsak teden. Klikni začetek termina, izberi trajanje in vpiši svoje podatke. Če vpišeš e-naslov, dobiš potrditev s povezavo za preklic. Na dan lahko rezerviraš največ 2 termina.",
+     "You can book in half-hour steps, from 30 minutes to 3 hours, also as a weekly recurring slot. Click the start time, choose the duration and enter your details. If you enter your e-mail, you get a confirmation with a cancellation link. You can book at most 2 slots per day.",
+     "Du kannst halbstundengenau buchen, von 30 Minuten bis 3 Stunden, auch wöchentlich wiederkehrend. Klicke auf die Startzeit, wähle die Dauer und gib deine Daten ein. Mit E-Mail-Adresse bekommst du eine Bestätigung mit Stornierungslink. Pro Tag sind höchstens 2 Termine möglich."],
+    ["Rezervacijo lahko v tem brskalniku prekličeš spodaj pod »Moje rezervacije«, sicer pokliči 031 528 978.",
+     "You can cancel in this browser under “My bookings” below, or call 031 528 978.",
+     "Stornieren kannst du in diesem Browser unten unter „Meine Buchungen“ oder telefonisch unter 031 528 978."],
+    ["Tvoja rezervacija", "Your booking", "Deine Buchung"], ["Moje rezervacije", "My bookings", "Meine Buchungen"],
+    ["Prosto", "Free", "Frei"], ["Zasedeno", "Booked", "Belegt"], ["Tvoj termin", "Your slot", "Dein Termin"],
+    ["z reflektorji", "with floodlights", "mit Flutlicht"], ["Z reflektorji", "With floodlights", "Mit Flutlicht"],
+    ["Igrišče", "Court", "Platz"], ["igrišče", "court", "Platz"],
+    ["Nalagam termine …", "Loading …", "Wird geladen …"], ["Nalagam …", "Loading …", "Wird geladen …"],
+    ["Termini se osvežujejo samodejno.", "Times refresh automatically.", "Termine werden automatisch aktualisiert."],
+    ["Terminov ni bilo mogoče naložiti.", "Could not load times.", "Termine konnten nicht geladen werden."],
+    ["Prekliči", "Cancel", "Stornieren"], ["ponavljajoča", "recurring", "wiederkehrend"],
+    ["Več →", "More →", "Mehr →"],
+    ["Turnir", "Tournament", "Turnier"], ["Trening", "Training", "Training"], ["Vzdrževanje igrišča", "Court maintenance", "Platzpflege"],
+    ["Vzdrževanje", "Maintenance", "Wartung"], ["Dogodek", "Event", "Veranstaltung"],
+    ["Rezervacija termina", "Book a slot", "Termin buchen"], ["Trajanje", "Duration", "Dauer"],
+    ["Ime in priimek", "Full name", "Vor- und Nachname"], ["Telefon", "Phone", "Telefon"], ["Igralci", "Players", "Spieler"],
+    ["E-pošta (neobvezno – za potrditev in preklic)", "E-mail (optional – for confirmation and cancellation)", "E-Mail (optional – für Bestätigung und Stornierung)"],
+    ["Ponavljaj vsak teden ob isti uri", "Repeat every week at the same time", "Jede Woche zur gleichen Zeit wiederholen"],
+    ["Koliko tednov? (2–26)", "How many weeks? (2–26)", "Wie viele Wochen? (2–26)"],
+    ["Opomba (neobvezno)", "Note (optional)", "Anmerkung (optional)"], ["Zapri", "Close", "Schließen"],
+    ["Potrdi rezervacijo", "Confirm booking", "Buchung bestätigen"], ["Prekliči rezervacijo", "Cancel booking", "Buchung stornieren"],
+    ["Cena:", "Price:", "Preis:"], ["na termin ×", "per slot ×", "pro Termin ×"], ["tednov", "weeks", "Wochen"],
+    ["+ reflektorji (1,5 €/h), če je temno", "+ floodlights (€1.50/h) after dark", "+ Flutlicht (1,50 €/h) bei Dunkelheit"],
+    ["Vpiši ime.", "Please enter your name.", "Bitte Namen eingeben."],
+    ["Vpiši veljavno telefonsko številko.", "Please enter a valid phone number.", "Bitte eine gültige Telefonnummer eingeben."],
+    ["Vpiši veljaven e-naslov ali pusti polje prazno.", "Enter a valid e-mail or leave it empty.", "Gültige E-Mail eingeben oder Feld leer lassen."],
+    ["Izberi trajanje.", "Choose a duration.", "Dauer wählen."],
+    ["Termin je zaseden", "This slot is already booked", "Dieser Termin ist bereits belegt"],
+    ["Termin je rezerviran za turnir ali drug dogodek", "This slot is reserved for a tournament or event", "Dieser Termin ist für ein Turnier oder eine Veranstaltung reserviert"],
+    ["Na dan lahko rezerviraš največ 2 termina", "You can book at most 2 slots per day", "Pro Tag sind höchstens 2 Termine möglich"],
+    ["Termin je že mimo", "This time has already passed", "Dieser Termin liegt in der Vergangenheit"],
+    ["Rezervacija je možna največ 14 dni vnaprej", "Bookings are possible up to 14 days ahead", "Buchungen sind bis zu 14 Tage im Voraus möglich"],
+    ["Rezervacija ni uspela. Poskusi znova ali pokliči 031 528 978.", "Booking failed. Try again or call 031 528 978.", "Buchung fehlgeschlagen. Bitte erneut versuchen oder 031 528 978 anrufen."],
+    ["Termin je rezerviran ✓", "Slot booked ✓", "Termin gebucht ✓"], ["Rezerviranih terminov:", "Slots booked:", "Gebuchte Termine:"],
+    ["Ni bilo mogoče:", "Not possible:", "Nicht möglich:"], ["Potrditev je poslana na", "Confirmation sent to", "Bestätigung gesendet an"],
+    ["Rezervacija je preklicana", "Booking cancelled", "Buchung storniert"],
+    ["Preklic ni uspel – pokliči 031 528 978", "Cancellation failed – call 031 528 978", "Stornierung fehlgeschlagen – bitte 031 528 978 anrufen"],
+    ["Vremenska napoved za Stražo", "Weather forecast for Straža", "Wettervorhersage für Straža"],
+    ["možnost padavin", "chance of rain", "Regenwahrscheinlichkeit"], ["Napoved za ta dan še ni na voljo.", "No forecast for this day yet.", "Für diesen Tag gibt es noch keine Vorhersage."],
+    ["jasno", "clear", "klar"], ["pretežno jasno", "mostly clear", "überwiegend klar"], ["delno oblačno", "partly cloudy", "teilweise bewölkt"],
+    ["oblačno", "cloudy", "bewölkt"], ["megla", "fog", "Nebel"], ["rosenje", "drizzle", "Nieselregen"], ["dež", "rain", "Regen"],
+    ["sneg", "snow", "Schnee"], ["plohe", "showers", "Schauer"], ["snežne plohe", "snow showers", "Schneeschauer"], ["nevihta", "thunderstorm", "Gewitter"],
+    ["Dve igrišči", "Two courts", "Zwei Plätze"],
+    ["Obe igrišči imata reflektorje, zato lahko igraš tudi zvečer. Več slik igrišč, lokala in parkirišča najdeš v",
+     "Both courts have floodlights, so you can play in the evening too. More photos of the courts, bar and parking are in the",
+     "Beide Plätze haben Flutlicht, du kannst also auch abends spielen. Mehr Fotos von Plätzen, Lokal und Parkplatz findest du in der"],
+    ["galeriji", "gallery", "Galerie"], ["Enostavne cene", "Simple prices", "Einfache Preise"],
+    ["Cena velja za igrišče na uro, ne glede na število igralcev.", "Price is per court per hour, regardless of the number of players.", "Der Preis gilt pro Platz und Stunde, unabhängig von der Spielerzahl."],
+    ["Igrišče 1 in 2", "Courts 1 and 2", "Plätze 1 und 2"], ["Najem igrišča", "Court rental", "Platzmiete"],
+    ["Reflektorji (ponoči)", "Floodlights (at night)", "Flutlicht (nachts)"], ["/ uro", "/ hour", "/ Stunde"],
+    ["Pridi na igrišče", "Come and play", "Komm vorbei"], ["Naslov", "Address", "Adresse"],
+    ["Navodila za pot →", "Directions →", "Route →"], ["Društvo", "Club", "Verein"], ["Delovni čas", "Opening hours", "Öffnungszeiten"],
+    ["Vsak dan", "Every day", "Täglich"], ["Za vprašanja pokliči 031 528 978.", "Questions? Call 031 528 978.", "Fragen? Ruf 031 528 978 an."],
+    ["Sledi nam na Facebooku", "Follow us on Facebook", "Folge uns auf Facebook"],
+    ["Poglej, kje igraš", "See where you play", "Sieh dir an, wo du spielst"],
+    ["Igrišča, lokal, parkirišče in okolica Tenis centra Obrul.", "Courts, bar, parking and surroundings of Tenis Center Obrul.", "Plätze, Lokal, Parkplatz und Umgebung des Tenis Center Obrul."],
+    ["Vse", "All", "Alle"], ["Lokal", "Bar", "Lokal"], ["Parkirišče", "Parking", "Parkplatz"], ["Okolica", "Surroundings", "Umgebung"],
+    ["Slike prihajajo kmalu.", "Photos coming soon.", "Fotos folgen bald."], ["še ni slik.", "no photos yet.", "noch keine Fotos."], ["V kategoriji", "In category", "In der Kategorie"],
+    ["Novice, obvestila in turnirji", "News, announcements and tournaments", "Neuigkeiten, Mitteilungen und Turniere"],
+    ["Obvestila", "Announcements", "Mitteilungen"], ["Trenutno ni novic.", "No news at the moment.", "Derzeit keine Neuigkeiten."],
+    ["Prihajajoči turnirji in dogodki", "Upcoming tournaments and events", "Kommende Turniere und Veranstaltungen"],
+    ["Ni napovedanih dogodkov.", "No upcoming events.", "Keine geplanten Veranstaltungen."],
+    ["V času turnirjev in drugih dogodkov igrišča niso na voljo za rezervacijo.", "Courts cannot be booked during tournaments and events.", "Während Turnieren und Veranstaltungen sind die Plätze nicht buchbar."],
+    ["pomembno", "important", "wichtig"], ["Prijava na turnir", "Tournament sign-up", "Turnieranmeldung"], ["Prijava", "Sign up", "Anmelden"],
+    ["Soigralec / partner (za dvojice)", "Partner (for doubles)", "Partner (für Doppel)"],
+    ["E-pošta (neobvezno – za potrditev)", "E-mail (optional – for confirmation)", "E-Mail (optional – für die Bestätigung)"],
+    ["Pošlji prijavo", "Send sign-up", "Anmeldung senden"],
+    ["Prijava je oddana! Ko jo pregledamo, vas obvestimo.", "Sign-up received! We will let you know once we review it.", "Anmeldung erhalten! Wir melden uns, sobald wir sie geprüft haben."],
+    ["Prijava ni uspela. Poskusi znova ali pokliči 031 528 978.", "Sign-up failed. Try again or call 031 528 978.", "Anmeldung fehlgeschlagen. Bitte erneut versuchen oder 031 528 978 anrufen."],
+    ["S to telefonsko številko je prijava že oddana", "A sign-up with this phone number already exists", "Mit dieser Telefonnummer gibt es bereits eine Anmeldung"],
+    ["Turnir ne obstaja ali je že mimo", "This tournament does not exist or is over", "Dieses Turnier existiert nicht oder ist vorbei"],
+    ["do", "until", "bis"],
+    ["Preklic rezervacije", "Cancel booking", "Buchung stornieren"], ["Pozdravljeni,", "Hello,", "Hallo,"],
+    ["Preklicali boste vse prihodnje termine:", "You are about to cancel all upcoming slots:", "Du stornierst alle kommenden Termine:"],
+    ["Preklicali boste ta termin:", "You are about to cancel this slot:", "Du stornierst diesen Termin:"],
+    ["Prekliči vse termine", "Cancel all slots", "Alle Termine stornieren"],
+    ["Rezervacija je preklicana. Hvala, da ste nam sporočili!", "Booking cancelled. Thanks for letting us know!", "Buchung storniert. Danke für die Info!"],
+    ["Preklicanih terminov:", "Slots cancelled:", "Stornierte Termine:"], ["Hvala, da ste nam sporočili!", "Thanks for letting us know!", "Danke für die Info!"],
+    ["Povezava za preklic ni veljavna.", "This cancellation link is not valid.", "Dieser Stornierungslink ist ungültig."],
+    ["Te rezervacije ni več – morda je že preklicana ali je termin že mimo.", "This booking no longer exists – it may already be cancelled or in the past.", "Diese Buchung gibt es nicht mehr – sie wurde evtl. bereits storniert oder ist vorbei."],
+    ["Težave? Pokliči 031 528 978.", "Problems? Call 031 528 978.", "Probleme? Ruf 031 528 978 an."], ["Na glavno stran", "Home page", "Zur Startseite"],
+    ["Preklic ni uspel. Pokliči 031 528 978.", "Cancellation failed. Call 031 528 978.", "Stornierung fehlgeschlagen. Bitte 031 528 978 anrufen."],
+    ["danes", "today", "heute"],
+    ["ponedeljek", "Monday", "Montag"], ["torek", "Tuesday", "Dienstag"], ["sreda", "Wednesday", "Mittwoch"], ["četrtek", "Thursday", "Donnerstag"],
+    ["petek", "Friday", "Freitag"], ["sobota", "Saturday", "Samstag"], ["nedelja", "Sunday", "Sonntag"],
+    ["pon", "Mon", "Mo"], ["tor", "Tue", "Di"], ["sre", "Wed", "Mi"], ["čet", "Thu", "Do"], ["pet", "Fri", "Fr"], ["sob", "Sat", "Sa"], ["ned", "Sun", "So"],
+    ["januar", "January", "Januar"], ["februar", "February", "Februar"], ["marec", "March", "März"], ["april", "April", "April"],
+    ["maj", "May", "Mai"], ["junij", "June", "Juni"], ["julij", "July", "Juli"], ["avgust", "August", "August"],
+    ["september", "September", "September"], ["oktober", "October", "Oktober"], ["november", "November", "November"], ["december", "December", "Dezember"],
+    ["avg", "Aug", "Aug"], ["okt", "Oct", "Okt"],
+    ["Igraj. Ponovi.", "Play. Repeat.", "Spielen. Wiederholen."]
+  ];
+  const LANGS = { sl: -1, en: 1, de: 2 };
+  const esc = s => s.replace(/[.*+?^(){}$|[\]\\]/g, "\\$&");
+  const rules = D.slice().sort((a, b) => b[0].length - a[0].length)
+    .map(r => ({ re: new RegExp("(?<![\\p{L}])" + esc(r[0]) + "(?![\\p{L}])", "gu"), en: r[1], de: r[2] }));
+
+  let lang = "sl";
+  try { lang = new URLSearchParams(location.search).get("lang") || localStorage.getItem("obrul_lang") || "sl"; } catch (e) {}
+  if (!(lang in LANGS)) lang = "sl";
+
+  const orig = new WeakMap(), last = new WeakMap();
+  const ATTRS = ["placeholder", "title", "alt", "aria-label"];
+  function tr(s) {
+    if (lang === "sl" || !s || !/\p{L}/u.test(s)) return s;
+    let out = s;
+    for (const r of rules) { r.re.lastIndex = 0; if (r.re.test(out)) { r.re.lastIndex = 0; out = out.replace(r.re, () => r[lang]); } }
+    return out;
+  }
+  function doText(n) {
+    if (last.get(n) === n.nodeValue) return;
+    orig.set(n, n.nodeValue);
+    const v = tr(n.nodeValue);
+    last.set(n, v);
+    if (v !== n.nodeValue) n.nodeValue = v;
+  }
+  function doEl(el) {
+    if (el.closest && el.closest("[data-noi18n], script, style, textarea")) return;
+    for (const a of ATTRS) {
+      if (!el.hasAttribute || !el.hasAttribute(a)) continue;
+      const k = "data-i18n-" + a;
+      if (!el.hasAttribute(k)) el.setAttribute(k, el.getAttribute(a));
+      el.setAttribute(a, tr(el.getAttribute(k)));
+    }
+  }
+  function skip(n) { const p = n.nodeType === 3 ? n.parentElement : n; return !p || !!p.closest("[data-noi18n], script, style, textarea"); }
+  function walk(root) {
+    if (skip(root)) return;
+    if (root.nodeType === 3) { doText(root); return; }
+    if (root.nodeType !== 1) return;
+    doEl(root);
+    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT, {
+      acceptNode: n => (n.nodeType === 1 && n.matches("script, style, textarea, [data-noi18n]")) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT
+    });
+    let n; while ((n = w.nextNode())) { if (n.nodeType === 3) doText(n); else doEl(n); }
+  }
+  let titleOrig = null;
+  function apply() {
+    document.documentElement.lang = lang;
+    if (titleOrig === null) titleOrig = document.title;
+    document.title = tr(titleOrig);
+    walk(document.body);
+    document.querySelectorAll(".lang-sel").forEach(s => { s.value = lang; });
+  }
+  window.setLang = function (l) {
+    if (!(l in LANGS)) return;
+    const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    let n; while ((n = w.nextNode())) { if (orig.has(n) && last.get(n) === n.nodeValue) { n.nodeValue = orig.get(n); last.delete(n); orig.delete(n); } }
+    lang = l; try { localStorage.setItem("obrul_lang", l); } catch (e) {}
+    apply();
+  };
+  window.T = tr;
+
+  const mo = new MutationObserver(ms => {
+    if (lang === "sl") return;
+    for (const m of ms) {
+      if (m.type === "characterData") { if (!skip(m.target)) doText(m.target); }
+      else m.addedNodes.forEach(walk);
+    }
+  });
+  function start() {
+    document.querySelectorAll(".lang-sel").forEach(s => s.addEventListener("change", () => window.setLang(s.value)));
+    apply();
+    mo.observe(document.body, { childList: true, subtree: true, characterData: true });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start); else start();
+})();

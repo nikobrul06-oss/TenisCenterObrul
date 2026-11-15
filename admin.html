@@ -65,9 +65,27 @@
       <button class="tab on" data-tab="rez">Rezervacije</button>
       <button class="tab" data-tab="tur">Turnirji in zaprti termini</button>
       <button class="tab" data-tab="nov">Novice in obvestila</button>
+      <button class="tab" data-tab="pri">Prijave na turnirje</button>
     </div>
 
     <div class="box" id="tab-rez">
+      <details class="manual" style="margin-bottom:16px"><summary style="cursor:pointer;font-weight:600;color:#c8562e">+ Ročni vnos rezervacije (npr. po telefonu)</summary>
+        <form id="manForm" style="margin-top:10px">
+          <div class="grid3">
+            <div><label for="mDate">Datum</label><input id="mDate" type="date" required></div>
+            <div><label for="mCourt">Igrišče</label><select id="mCourt"><option value="1">Igrišče 1</option><option value="2">Igrišče 2</option></select></div>
+            <div><label for="mStart">Začetek</label><select id="mStart"></select></div>
+          </div>
+          <div class="grid3">
+            <div><label for="mDur">Trajanje</label><select id="mDur"></select></div>
+            <div><label for="mName">Ime in priimek</label><input id="mName" required maxlength="60"></div>
+            <div><label for="mPhone">Telefon</label><input id="mPhone" maxlength="20"></div>
+          </div>
+          <label for="mNote">Opomba</label><input id="mNote" maxlength="120">
+          <div class="err" id="mErr"></div><div class="ok" id="mOk"></div>
+          <button type="submit">Dodaj rezervacijo</button>
+        </form>
+      </details>
       <div class="top" style="margin-bottom:12px">
         <label class="muted" style="display:flex;gap:6px;align-items:center;margin:0;font-weight:500"><input type="checkbox" id="showPast" style="width:auto">Pokaži pretekle</label>
         <button class="ghost" id="refresh">Osveži</button>
@@ -119,6 +137,13 @@
         <div id="newsList" class="muted">Nalagam …</div>
       </div>
     </div>
+    <div id="tab-pri" style="display:none">
+      <div class="box">
+        <div class="top" style="margin-bottom:8px"><h2 style="margin:0">Prijave na turnirje</h2><button class="ghost" id="sRefresh">Osveži</button></div>
+        <p class="muted" style="margin-top:0">Ko prijavo potrdiš ali zavrneš, prijavljeni dobi e-pošto (če jo je vpisal).</p>
+        <div id="signList" class="muted">Nalagam …</div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -143,8 +168,8 @@ $("bStart").value="420"; $("bEnd").value="1440";
 
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{
   document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("on",x===t));
-  ["rez","tur","nov"].forEach(k=>$("tab-"+k).style.display = k===t.dataset.tab ? "block":"none");
-  if(t.dataset.tab==="tur") loadBlocks(); if(t.dataset.tab==="nov") loadNews(); if(t.dataset.tab==="rez") load();
+  ["rez","tur","nov","pri"].forEach(k=>$("tab-"+k).style.display = k===t.dataset.tab ? "block":"none");
+  if(t.dataset.tab==="tur") loadBlocks(); if(t.dataset.tab==="nov") loadNews(); if(t.dataset.tab==="rez") load(); if(t.dataset.tab==="pri") loadSignups();
 });
 
 async function show(){
@@ -239,6 +264,48 @@ async function loadNews(){
     it.appendChild(l); it.appendChild(x); box.appendChild(it);
   });
 }
+
+// ---- ročni vnos ----
+for (let m=420; m<1440; m+=30) { const o=document.createElement("option"); o.value=m; o.textContent=hm(m); $("mStart").appendChild(o); }
+for (let d=30; d<=180; d+=30) { const o=document.createElement("option"); o.value=d; o.textContent=(Math.floor(d/60)?Math.floor(d/60)+" h ":"")+(d%60?d%60+" min":""); if(d===60) o.selected=true; $("mDur").appendChild(o); }
+$("mDate").value = today(); $("mStart").value = "1020";
+$("manForm").addEventListener("submit", async e=>{
+  e.preventDefault(); $("mErr").textContent=""; $("mOk").textContent="";
+  const s=Number($("mStart").value), d=Number($("mDur").value);
+  if (s + d > 1440) { $("mErr").textContent="Termin mora končati do 24:00."; return; }
+  const { error } = await sb.rpc("admin_book", { p_date:$("mDate").value, p_court:Number($("mCourt").value), p_start_min:s, p_dur_min:d,
+    p_name:$("mName").value.trim(), p_phone:$("mPhone").value.trim(), p_note:$("mNote").value.trim()||null, p_email:null });
+  if (error) { $("mErr").textContent = /zaseden|zaprt/.test(error.message||"") ? error.message : "Vnos ni uspel."; console.log(error); return; }
+  $("mOk").textContent = "Dodano: " + niceDate($("mDate").value) + " " + hm(s) + "–" + hm(s+d) + ", igrišče " + $("mCourt").value + ".";
+  $("mName").value=""; $("mPhone").value=""; $("mNote").value="";
+  load();
+});
+
+// ---- prijave na turnirje ----
+const ST = { caka:"čaka", potrjeno:"potrjeno", zavrnjeno:"zavrnjeno" };
+async function loadSignups(){
+  const from = new Date(Date.now()-30*864e5); const f = from.getFullYear()+"-"+pad(from.getMonth()+1)+"-"+pad(from.getDate());
+  const { data, error } = await sb.from("tournament_signups").select("*").gte("event_date", f).order("event_date").order("created_at");
+  const box=$("signList"); box.innerHTML="";
+  if(error){ box.textContent="Napaka pri nalaganju."; console.log(error); return; }
+  if(!data.length){ box.textContent="Ni prijav."; return; }
+  let last="";
+  data.forEach(s=>{
+    const k=s.title+"|"+s.event_date;
+    if(k!==last){ last=k; const h=document.createElement("h2"); h.style.cssText="font-size:17px;margin:16px 0 4px"; h.textContent=s.title+" · "+niceDate(s.event_date)+" ("+data.filter(x=>x.title===s.title&&x.event_date===s.event_date&&x.status!=="zavrnjeno").length+" prijav)"; box.appendChild(h); }
+    const it=document.createElement("div"); it.className="item";
+    const l=document.createElement("div");
+    const t=document.createElement("b"); t.textContent=s.name+(s.partner?" + "+s.partner:""); l.appendChild(t);
+    const p=document.createElement("span"); p.className="pill"; p.textContent=ST[s.status]||s.status; if(s.status==="potrjeno") p.style.background="#e3f1e6"; if(s.status==="zavrnjeno") p.style.background="#f8e1de"; l.appendChild(p);
+    const m=document.createElement("div"); m.className="muted"; m.textContent=s.phone+(s.email?" · "+s.email:"")+(s.note?" · "+s.note:""); l.appendChild(m);
+    const r=document.createElement("div"); r.style.cssText="display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap";
+    if(s.status!=="potrjeno"){ const b=document.createElement("button"); b.textContent="Potrdi"; b.style.padding="6px 12px"; b.onclick=async()=>{ await sb.from("tournament_signups").update({status:"potrjeno"}).eq("id",s.id); loadSignups(); }; r.appendChild(b); }
+    if(s.status!=="zavrnjeno"){ const b=document.createElement("button"); b.className="ghost"; b.textContent="Zavrni"; b.style.padding="6px 12px"; b.onclick=async()=>{ await sb.from("tournament_signups").update({status:"zavrnjeno"}).eq("id",s.id); loadSignups(); }; r.appendChild(b); }
+    const x=document.createElement("button"); x.className="del"; x.textContent="Izbriši"; confirmBtn(x, async()=>{ await sb.from("tournament_signups").delete().eq("id",s.id); loadSignups(); }); r.appendChild(x);
+    it.appendChild(l); it.appendChild(r); box.appendChild(it);
+  });
+}
+$("sRefresh").onclick = loadSignups;
 
 $("login").addEventListener("submit", async e=>{
   e.preventDefault(); $("lErr").textContent="";

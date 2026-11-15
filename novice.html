@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Novice, obvestila in turnirji – ŠRD Straža, Tenis center Obrul.">
+<meta name="description" content="Novice, obvestila in turnirji – ŠRD Straža, Tenis center Obrul. Prijava na turnirje.">
 <link rel="icon" href="favicon.ico" sizes="48x48">
 <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -11,37 +11,53 @@
 <title>Novice in turnirji — Tenis center Obrul</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{--clay:#c8562e;--green:#1f3d2b;--line:#e7e1d8;--bg:#fbf8f3;--ink:#1c1c1a;--muted:#6d685f}
+  :root{--clay:#c8562e;--green:#1f3d2b;--green-2:#2d5a3f;--line:#e7e1d8;--bg:#fbf8f3;--ink:#1c1c1a;--muted:#6d685f}
   *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
   h1,h2,h3{font-family:"Bricolage Grotesque",Inter,sans-serif;line-height:1.15;margin:0}
   .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
   header.top{position:sticky;top:0;z-index:20;background:rgba(251,248,243,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
   header.top .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
   .logo{display:flex;align-items:center;gap:10px;font-family:"Bricolage Grotesque";font-weight:800;font-size:20px;text-decoration:none;color:inherit}
+  nav{display:flex;align-items:center}
   nav a{text-decoration:none;font-weight:500;color:var(--muted);margin-left:22px;font-size:15px}
   nav a:hover,nav a.on{color:var(--ink)}
-  .btn{display:inline-flex;border-radius:999px;padding:9px 18px;font:600 15px Inter;text-decoration:none;background:var(--clay);color:#fff!important}
+  .btn{display:inline-flex;border-radius:999px;padding:9px 18px;font:600 15px Inter;text-decoration:none;background:var(--clay);color:#fff!important;border:0;cursor:pointer}
   .btn-white{background:#fff!important;color:var(--ink)!important;border:1.5px solid var(--line)}
+  .lang-sel{margin-left:18px;border:1.5px solid var(--line);border-radius:999px;background:#fff;font:600 13px Inter;padding:7px 8px;color:var(--ink);cursor:pointer}
   @media(max-width:960px){nav a:not(.btn):not(.on){display:none}}
-  @media(max-width:520px){nav .btn{padding:8px 12px!important;margin-left:6px!important;font-size:14px!important}}
+  @media(max-width:520px){nav .btn{padding:8px 12px!important;margin-left:6px!important;font-size:14px!important}.lang-sel{margin-left:6px;padding:6px 4px}}
   @media(max-width:400px){.logo > span{display:none}}
   .head{padding:56px 0 18px}
   .eyebrow{font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--clay);margin-bottom:10px}
   .head h1{font-size:clamp(32px,5vw,52px)}
-  .cols{display:grid;grid-template-columns:1.4fr 1fr;gap:28px;padding-bottom:72px}
+  .cols{display:grid;grid-template-columns:1.3fr 1fr;gap:28px;padding-bottom:72px}
   @media(max-width:860px){.cols{grid-template-columns:1fr}}
   .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:14px}
   .card.imp{border-color:#f0b48f;background:#fff6ef}
   .date{font-size:13px;color:var(--muted);margin-bottom:6px}
   .card h3{font-size:20px;margin-bottom:6px}
   .card p{margin:0;white-space:pre-line;color:#3b3833}
-  .ev{display:flex;gap:14px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line)}
+  .ev{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line)}
   .ev:last-child{border:0}
   .cal{flex:none;width:52px;text-align:center;background:var(--green);color:#fff;border-radius:10px;padding:6px 0}
   .cal b{display:block;font-family:"Bricolage Grotesque";font-size:20px;line-height:1}
   .cal small{font-size:11px;text-transform:uppercase}
+  .ev .btn{margin-top:8px;padding:7px 14px;font-size:14px}
   .muted{color:var(--muted)}
   footer{background:var(--green);color:#a9b8ab;padding:28px 0;font-size:14px}
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+  footer a{color:#fff}
+  .overlay{position:fixed;inset:0;background:rgba(20,24,20,.55);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+  .overlay.open{display:flex}
+  .modal{background:#fff;border-radius:20px;max-width:460px;width:100%;padding:26px;max-height:92vh;overflow:auto}
+  .modal h3{font-size:24px;margin-bottom:4px}
+  .field{margin-bottom:12px}
+  .field label{display:block;font-size:13px;font-weight:600;margin-bottom:5px}
+  .field input,.field textarea{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font:15px Inter}
+  .field textarea{min-height:70px;resize:vertical}
+  .err{color:#b3261e;font-size:14px;min-height:20px}
+  .okmsg{color:var(--green-2);font-weight:600}
+  .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
 </style>
 </head>
 <body>
@@ -56,7 +72,8 @@
       <a href="novice.html" class="on">Novice</a>
       <a href="./#cenik">Cenik</a>
       <a href="./#kontakt">Kontakt</a>
-      <a class="btn btn-white" href="galerija.html" style="margin-left:22px">Galerija</a>
+      <select class="lang-sel" aria-label="Jezik / Language" data-noi18n><option value="sl">SL</option><option value="en">EN</option><option value="de">DE</option></select>
+      <a class="btn btn-white" href="galerija.html" style="margin-left:10px">Galerija</a>
       <a class="btn" href="./#rezervacija" style="margin-left:10px">Rezerviraj</a>
     </nav>
   </div>
@@ -79,33 +96,84 @@
   </div>
 </div>
 
-<footer><div class="wrap">© 2026 ŠRD Straža · Tenis center Obrul · 031 528 978</div></footer>
+<footer><div class="wrap"><span>© 2026 ŠRD Straža · Tenis center Obrul · 031 528 978</span><a href="https://www.facebook.com/share/1ECnXx2Gk2/" target="_blank" rel="noopener">Facebook</a></div></footer>
+
+<div class="overlay" id="overlay" role="dialog" aria-modal="true">
+  <form class="modal" id="form">
+    <h3>Prijava na turnir</h3>
+    <div class="muted" id="sTitle" style="margin-bottom:16px" data-noi18n></div>
+    <div id="sFields">
+      <div class="field"><label for="sName">Ime in priimek</label><input id="sName" required maxlength="60" autocomplete="name"></div>
+      <div class="field"><label for="sPhone">Telefon</label><input id="sPhone" required maxlength="20" autocomplete="tel" inputmode="tel"></div>
+      <div class="field"><label for="sEmail">E-pošta (neobvezno – za potrditev)</label><input id="sEmail" type="email" maxlength="80" autocomplete="email"></div>
+      <div class="field"><label for="sPartner">Soigralec / partner (za dvojice)</label><input id="sPartner" maxlength="60"></div>
+      <div class="field"><label for="sNote">Opomba (neobvezno)</label><textarea id="sNote" maxlength="300"></textarea></div>
+    </div>
+    <div class="err" id="sErr"></div>
+    <div class="actions">
+      <button type="button" class="btn btn-white" id="sClose">Zapri</button>
+      <button type="submit" class="btn" id="sSubmit">Pošlji prijavo</button>
+    </div>
+  </form>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js?v=3"></script>
 <script>
 const sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+const $ = id => document.getElementById(id);
 const pad = n => String(n).padStart(2,"0");
 const hm = m => (m===1440?"24":pad(Math.floor(m/60)))+":"+pad(m%60);
 const MON = ["jan","feb","mar","apr","maj","jun","jul","avg","sep","okt","nov","dec"];
 const KIND = {turnir:"Turnir",trening:"Trening",vzdrzevanje:"Vzdrževanje igrišča",drugo:"Dogodek"};
 const el = (tag, cls, txt) => { const e=document.createElement(tag); if(cls) e.className=cls; if(txt!=null) e.textContent=txt; return e; };
 const today = () => { const d=new Date(); return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); };
+let current = null;
+
+function openSignup(g) {
+  current = g;
+  const d = new Date(g.from+"T12:00:00");
+  $("sTitle").textContent = g.title + " · " + d.getDate() + ". " + (d.getMonth()+1) + ". " + d.getFullYear();
+  $("sFields").style.display = "block"; $("sSubmit").style.display = ""; $("sErr").textContent = "";
+  try { const s = JSON.parse(localStorage.getItem("obrul_contact") || "{}"); if (s.name) $("sName").value = s.name; if (s.phone) $("sPhone").value = s.phone; if (s.email) $("sEmail").value = s.email; } catch (e) {}
+  $("overlay").classList.add("open"); setTimeout(() => $("sName").focus(), 50);
+}
+function closeSignup(){ $("overlay").classList.remove("open"); }
+$("sClose").onclick = closeSignup;
+$("overlay").addEventListener("click", e => { if (e.target.id === "overlay") closeSignup(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeSignup(); });
+
+$("form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const name=$("sName").value.trim(), phone=$("sPhone").value.trim(), email=$("sEmail").value.trim();
+  if (name.length < 2) { $("sErr").textContent = "Vpiši ime."; return; }
+  if (!/^[+0-9 ()\/-]{6,20}$/.test(phone)) { $("sErr").textContent = "Vpiši veljavno telefonsko številko."; return; }
+  if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { $("sErr").textContent = "Vpiši veljaven e-naslov ali pusti polje prazno."; return; }
+  $("sSubmit").disabled = true;
+  const { error } = await sb.rpc("tournament_signup", { p_title: current.title, p_date: current.from, p_name: name, p_phone: phone,
+    p_email: email || null, p_partner: $("sPartner").value.trim() || null, p_note: $("sNote").value.trim() || null });
+  $("sSubmit").disabled = false;
+  if (error) { const m = error.message || ""; $("sErr").textContent = /že oddana|ne obstaja/.test(m) ? m : "Prijava ni uspela. Poskusi znova ali pokliči 031 528 978."; return; }
+  try { localStorage.setItem("obrul_contact", JSON.stringify({ name, phone, email })); } catch (e) {}
+  $("sFields").style.display = "none"; $("sSubmit").style.display = "none";
+  $("sErr").innerHTML = ""; const ok = el("p", "okmsg", "Prijava je oddana! Ko jo pregledamo, vas obvestimo."); $("sErr").appendChild(ok);
+  $("sPartner").value = ""; $("sNote").value = "";
+});
 
 (async () => {
   const { data: news } = await sb.from("news").select("*").order("created_at", { ascending:false }).limit(30);
-  const nb = document.getElementById("news"); nb.innerHTML = "";
+  const nb = $("news"); nb.innerHTML = "";
   if (!news || !news.length) nb.appendChild(el("p","muted","Trenutno ni novic."));
   (news||[]).forEach(n => {
     const c = el("div", "card" + (n.important ? " imp" : ""));
     c.appendChild(el("div","date", new Date(n.created_at).toLocaleDateString("sl-SI", { day:"numeric", month:"long", year:"numeric" }) + (n.important ? " · pomembno" : "")));
-    c.appendChild(el("h3", null, n.title));
-    if (n.body) c.appendChild(el("p", null, n.body));
+    const h = el("h3", null, n.title); h.setAttribute("data-noi18n", ""); c.appendChild(h);
+    if (n.body) { const p = el("p", null, n.body); p.setAttribute("data-noi18n", ""); c.appendChild(p); }
     nb.appendChild(c);
   });
 
   const { data: bl } = await sb.from("blocks").select("*").gte("date", today()).order("date").order("start_min").limit(200);
-  const eb = document.getElementById("events"); eb.innerHTML = "";
+  const eb = $("events"); eb.innerHTML = "";
   const groups = [];
   (bl||[]).forEach(b => {
     const g = groups.find(x => x.title === b.title && x.kind === b.kind && x.last && (new Date(b.date) - new Date(x.last)) <= 864e5);
@@ -115,12 +183,14 @@ const today = () => { const d=new Date(); return d.getFullYear()+"-"+pad(d.getMo
   groups.slice(0, 20).forEach(g => {
     const r = el("div","ev"); const d = new Date(g.from+"T12:00:00");
     const cal = el("div","cal"); cal.appendChild(el("b",null,d.getDate())); cal.appendChild(el("small",null,MON[d.getMonth()])); r.appendChild(cal);
-    const t = el("div"); t.appendChild(el("b",null,g.title));
+    const t = el("div"); const tb = el("b",null,g.title); tb.setAttribute("data-noi18n",""); t.appendChild(tb);
     const to = new Date(g.to+"T12:00:00");
-    t.appendChild(el("div","muted", KIND[g.kind] + " · " + (g.from!==g.to ? "do " + to.getDate() + ". " + (to.getMonth()+1) + ". · " : "") + hm(g.s) + "–" + hm(g.e) + " · igrišče " + g.courts.join(" in ")));
+    t.appendChild(el("div","muted", KIND[g.kind] + " · " + (g.from!==g.to ? "do " + to.getDate() + ". " + (to.getMonth()+1) + ". · " : "") + hm(g.s) + "–" + hm(g.e) + " · igrišče " + g.courts.join(" & ")));
+    if (g.kind === "turnir") { const b = el("button","btn","Prijava"); b.type = "button"; b.onclick = () => openSignup(g); t.appendChild(b); }
     r.appendChild(t); eb.appendChild(r);
   });
 })();
 </script>
+<script src="i18n.js?v=1"></script>
 </body>
 </html>

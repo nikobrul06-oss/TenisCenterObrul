@@ -23,6 +23,7 @@
 </head>
 <body>
 <div class="wrap">
+  <div style="float:right"><select class="lang-sel" aria-label="Jezik / Language" data-noi18n style="border:1.5px solid #e7e1d8;border-radius:999px;background:#fff;font:600 13px Inter;padding:7px 8px"><option value="sl">SL</option><option value="en">EN</option><option value="de">DE</option></select></div>
   <a href="./"><img src="lOGO.jpg" alt="ŠRD Straža – Tenis center Obrul" style="height:64px;border-radius:8px"></a>
   <h1>Preklic rezervacije</h1>
   <div class="box" id="box"><p class="muted">Nalagam …</p></div>
@@ -60,5 +61,6 @@ function msg(t){ box.innerHTML=""; box.appendChild(el("p",null,t)); }
 })();
 function alertBox(t){ const p=el("p",null,t); p.style.color="#b3261e"; box.appendChild(p); }
 </script>
+<script src="i18n.js?v=1"></script>
 </body>
 </html>

@@ -47,6 +47,11 @@
   .btn-white:hover{border-color:var(--ink)}
   @media(max-width:520px){nav .btn{padding:8px 12px!important;margin-left:6px!important;font-size:14px!important}}
   @media(max-width:400px){.logo > span{display:none}}
+
+  nav{display:flex;align-items:center}
+  .lang-sel{margin-left:18px;border:1.5px solid var(--line);border-radius:999px;background:#fff;font:600 13px Inter;padding:7px 8px;color:var(--ink);cursor:pointer}
+  @media(max-width:520px){.lang-sel{margin-left:6px;padding:6px 4px}}
+  footer a{color:#fff}
 </style>
 </head>
 <body>
@@ -61,7 +66,8 @@
             <a href="novice.html">Novice</a>
       <a href="./#cenik">Cenik</a>
       <a href="./#kontakt">Kontakt</a>
-      <a class="btn btn-white on" href="galerija.html" style="margin-left:22px">Galerija</a>
+      <select class="lang-sel" aria-label="Jezik / Language" data-noi18n><option value="sl">SL</option><option value="en">EN</option><option value="de">DE</option></select>
+      <a class="btn btn-white on" href="galerija.html" style="margin-left:10px">Galerija</a>
       <a class="btn" href="./#rezervacija" style="margin-left:10px">Rezerviraj</a>
     </nav>
   </div>
@@ -78,7 +84,7 @@
   <div class="grid" id="grid"></div>
 </div>
 
-<footer><div class="wrap">© 2026 ŠRD Straža · Tenis center Obrul · 031 528 978</div></footer>
+<footer><div class="wrap">© 2026 ŠRD Straža · Tenis center Obrul · 031 528 978 · <a href="https://www.facebook.com/share/1ECnXx2Gk2/" target="_blank" rel="noopener">Facebook</a></div></footer>
 
 <div class="lb" id="lb">
   <button class="x" id="lbX" aria-label="Zapri">×</button>
@@ -115,7 +121,7 @@ function renderGrid() {
     const b = document.createElement("button"); b.className = "item"; b.type = "button";
     const im = document.createElement("img"); im.src = p.src; im.alt = p.naslov || ""; im.loading = "lazy";
     b.appendChild(im);
-    if (p.naslov) { const s = document.createElement("span"); s.textContent = p.naslov; b.appendChild(s); }
+    if (p.naslov) { const s = document.createElement("span"); s.setAttribute("data-noi18n",""); s.textContent = p.naslov; b.appendChild(s); }
     b.onclick = () => openLb(i);
     g.appendChild(b);
   });
@@ -133,5 +139,6 @@ document.addEventListener("keydown", e => {
 renderChips(); renderGrid();
 fetch("galerija.json?v=" + Date.now()).then(r => r.ok ? r.json() : []).then(d => { photos = Array.isArray(d) ? d : []; renderGrid(); }).catch(() => {});
 </script>
+<script src="i18n.js?v=1"></script>
 </body>
 </html>
