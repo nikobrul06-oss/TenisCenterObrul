@@ -129,6 +129,11 @@
   .err{color:#b3261e;font-size:14px;min-height:20px}
   .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:999px;font-size:14px;transition:.3s;z-index:60}
   .toast.show{transform:translateX(-50%) translateY(0)}
+
+  .btn-white{background:#fff!important;color:var(--ink)!important;border:1.5px solid var(--line)}
+  .btn-white:hover{border-color:var(--ink)}
+  @media(max-width:520px){nav .btn{padding:8px 12px!important;margin-left:6px!important;font-size:14px!important}}
+  @media(max-width:400px){.logo > span{display:none}}
 </style>
 </head>
 <body>
@@ -141,10 +146,10 @@
     </a>
     <nav>
       <a href="#igrisca">Igrišča</a>
-      <a href="galerija.html">Galerija</a>
       <a href="#cenik">Cenik</a>
       <a href="#kontakt">Kontakt</a>
-      <a class="btn btn-clay" href="#rezervacija" style="padding:9px 18px;margin-left:22px;color:#fff">Rezerviraj</a>
+      <a class="btn btn-white" href="galerija.html" style="padding:9px 18px;margin-left:22px">Galerija</a>
+      <a class="btn btn-clay" href="#rezervacija" style="padding:9px 18px;margin-left:10px;color:#fff">Rezerviraj</a>
     </nav>
   </div>
 </header>

@@ -39,6 +39,11 @@
   .lb button{position:absolute;background:rgba(255,255,255,.12);border:0;color:#fff;width:46px;height:46px;border-radius:50%;font-size:22px;cursor:pointer}
   .lb .x{top:16px;right:16px}.lb .p{left:16px;top:50%}.lb .n{right:16px;top:50%}
   footer{background:var(--green);color:#a9b8ab;padding:28px 0;font-size:14px}
+
+  .btn-white{background:#fff!important;color:var(--ink)!important;border:1.5px solid var(--line)}
+  .btn-white:hover{border-color:var(--ink)}
+  @media(max-width:520px){nav .btn{padding:8px 12px!important;margin-left:6px!important;font-size:14px!important}}
+  @media(max-width:400px){.logo > span{display:none}}
 </style>
 </head>
 <body>
@@ -50,10 +55,10 @@
     </a>
     <nav>
       <a href="./#igrisca">Igrišča</a>
-      <a href="galerija.html" class="on">Galerija</a>
-      <a href="./#cenik">Cenik</a>
+            <a href="./#cenik">Cenik</a>
       <a href="./#kontakt">Kontakt</a>
-      <a class="btn" href="./#rezervacija" style="margin-left:22px">Rezerviraj</a>
+      <a class="btn btn-white on" href="galerija.html" style="margin-left:22px">Galerija</a>
+      <a class="btn" href="./#rezervacija" style="margin-left:10px">Rezerviraj</a>
     </nav>
   </div>
 </header>
