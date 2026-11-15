@@ -153,6 +153,8 @@
   .news-banner a{color:#c8562e;font-weight:600;margin-left:6px}
   .map{grid-column:1/-1;border-radius:16px;overflow:hidden;border:1px solid var(--line);height:340px;background:#e9e4da}
   .map iframe{width:100%;height:100%;border:0;display:block}
+  .field label.chk{display:flex;gap:8px;align-items:center;cursor:pointer}
+  .field label.chk input{width:auto;margin:0}
 </style>
 </head>
 <body>
@@ -282,7 +284,7 @@
         <div class="field"><label for="fPlayers">Igralci</label><select id="fPlayers"><option>2</option><option>3</option><option>4</option></select></div>
       </div>
       <div class="field"><label for="fEmail">E-pošta (neobvezno – za potrditev in preklic)</label><input id="fEmail" type="email" maxlength="80" autocomplete="email" inputmode="email"></div>
-      <div class="field"><label for="fRepeat">Ponavljanje</label><select id="fRepeat"><option value="1">Samo enkrat</option><option value="2">Vsak teden – 2 tedna</option><option value="3">Vsak teden – 3 tedne</option><option value="4">Vsak teden – 4 tedne</option><option value="6">Vsak teden – 6 tednov</option><option value="8">Vsak teden – 8 tednov</option></select></div>
+      <div class="field"><label class="chk" for="fRepeatOn"><input type="checkbox" id="fRepeatOn"> Ponavljaj vsak teden ob isti uri</label><div id="fWeeksWrap" style="display:none;margin-top:8px"><label for="fWeeks">Koliko tednov? (2–26)</label><input id="fWeeks" type="number" min="2" max="26" step="1" value="4" inputmode="numeric"></div><input type="hidden" id="fRepeat" value="1"></div>
       <div class="field"><label for="fNote">Opomba (neobvezno)</label><input id="fNote" maxlength="120"></div>
     </div>
     <div class="notice" id="fPrice" style="margin:0 0 6px;font-weight:600;color:var(--ink)"></div>
@@ -297,6 +299,15 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js?v=3"></script>
-<script src="app.js?v=5"></script>
+<script src="app.js?v=6"></script>
+<script>
+(function(){
+  const on=document.getElementById("fRepeatOn"), wrap=document.getElementById("fWeeksWrap"), wk=document.getElementById("fWeeks"), rep=document.getElementById("fRepeat");
+  function sync(){ wrap.style.display = on.checked ? "block" : "none"; const w = Math.max(2, Math.min(26, parseInt(wk.value, 10) || 2)); rep.value = on.checked ? String(w) : "1"; rep.dispatchEvent(new Event("change")); }
+  on.addEventListener("change", () => { sync(); if (on.checked) wk.focus(); });
+  wk.addEventListener("input", sync);
+  wk.addEventListener("blur", () => { if (on.checked) wk.value = rep.value; });
+})();
+</script>
 </body>
 </html>

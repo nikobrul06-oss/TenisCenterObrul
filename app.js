@@ -137,7 +137,7 @@ function openBook(date, court, start) {
     if (d === Math.min(60, free)) o.selected = true;
     sel.appendChild(o);
   }
-  $("fRepeat").value = "1";
+  $("fRepeat").value = "1"; $("fRepeatOn").checked = false; $("fWeeksWrap").style.display = "none"; $("fWeeks").value = "4";
   $("mTitle").textContent = "Rezervacija termina";
   $("adminBox").innerHTML = ""; $("fields").style.display = "block";
   $("mSubmit").textContent = "Potrdi rezervacijo";
