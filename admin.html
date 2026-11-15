@@ -57,6 +57,7 @@
 const sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
 const $ = id => document.getElementById(id);
 const pad = n => String(n).padStart(2,"0");
+const hm = m => (m===1440?"24":pad(Math.floor(m/60)))+":"+pad(m%60);
 const DOW = ["nedelja","ponedeljek","torek","sreda","četrtek","petek","sobota"];
 const today = () => { const d=new Date(); return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); };
 
@@ -69,7 +70,7 @@ async function show(){
 }
 
 async function load(){
-  let q = sb.from("bookings").select("id,date,court,hour,name,phone,players,note").order("date").order("hour").order("court");
+  let q = sb.from("bookings").select("id,date,court,start_min,dur_min,name,phone,players,note").order("date").order("start_min").order("court");
   if(!$("showPast").checked) q = q.gte("date", today());
   const { data, error } = await q;
   const tb = $("rows"); tb.innerHTML = "";
@@ -84,7 +85,7 @@ async function load(){
       tr.appendChild(td); tb.appendChild(tr);
     }
     const tr=document.createElement("tr");
-    [pad(b.hour)+":00–"+(b.hour+1===24?"24":pad(b.hour+1))+":00", "Igrišče "+b.court, b.name, b.phone, b.players, b.note||""].forEach(v=>{
+    [hm(b.start_min)+"–"+hm(b.start_min+b.dur_min), "Igrišče "+b.court, b.name, b.phone, b.players, b.note||""].forEach(v=>{
       const td=document.createElement("td"); td.textContent=v; tr.appendChild(td);
     });
     const td=document.createElement("td"); const x=document.createElement("button"); x.className="del"; x.textContent="Izbriši";

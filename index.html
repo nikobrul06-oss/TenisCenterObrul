@@ -134,6 +134,10 @@
   .btn-white:hover{border-color:var(--ink)}
   @media(max-width:520px){nav .btn{padding:8px 12px!important;margin-left:6px!important;font-size:14px!important}}
   @media(max-width:400px){.logo > span{display:none}}
+
+  .slot{height:34px}
+  .grid tr:not(.full) td.time{font-weight:400;font-size:12px;color:#a29c92}
+  .grid tr.full td{padding-top:4px}
 </style>
 </head>
 <body>
@@ -176,7 +180,7 @@
   <div class="wrap">
     <div class="eyebrow">Rezervacija</div>
     <h2 class="sec-title">Izberi termin</h2>
-    <p class="sec-sub">Termini trajajo 1 uro. Klikni prost termin in vpiši svoje podatke. Rezervacijo lahko v tem brskalniku prekličeš spodaj pod »Moje rezervacije«, sicer pokliči 031 528 978.</p>
+    <p class="sec-sub">Termin lahko rezerviraš na pol ure natančno, od 30 minut do 3 ur. Klikni začetek termina, izberi trajanje in vpiši svoje podatke. Rezervacijo lahko v tem brskalniku prekličeš spodaj pod »Moje rezervacije«, sicer pokliči 031 528 978.</p>
 
     <div class="booking">
       <div class="banner" id="banner"></div>
@@ -252,6 +256,7 @@
     <div class="when" id="mWhen"></div>
     <div id="adminBox"></div>
     <div id="fields">
+      <div class="field"><label for="fDur">Trajanje</label><select id="fDur"></select></div>
       <div class="field"><label for="fName">Ime in priimek</label><input id="fName" required maxlength="60" autocomplete="name"></div>
       <div class="row2">
         <div class="field"><label for="fPhone">Telefon</label><input id="fPhone" required maxlength="20" autocomplete="tel" inputmode="tel"></div>
@@ -259,6 +264,7 @@
       </div>
       <div class="field"><label for="fNote">Opomba (neobvezno)</label><input id="fNote" maxlength="120"></div>
     </div>
+    <div class="notice" id="fPrice" style="margin:0 0 6px;font-weight:600;color:var(--ink)"></div>
     <div class="err" id="mErr"></div>
     <div class="actions">
       <button type="button" class="btn btn-ghost" id="mCancel">Zapri</button>
@@ -270,6 +276,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js?v=3"></script>
-<script src="app.js?v=3"></script>
+<script src="app.js?v=4"></script>
 </body>
 </html>
