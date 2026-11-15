@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Novice, obvestila in turnirji – ŠRD Straža, Tenis center Obrul.">
+<link rel="icon" href="lOGO.jpg">
+<link rel="canonical" href="https://tenis-center-obrul.si/novice.html">
+<title>Novice in turnirji — Tenis center Obrul</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--clay:#c8562e;--green:#1f3d2b;--line:#e7e1d8;--bg:#fbf8f3;--ink:#1c1c1a;--muted:#6d685f}
+  *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+  h1,h2,h3{font-family:"Bricolage Grotesque",Inter,sans-serif;line-height:1.15;margin:0}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+  header.top{position:sticky;top:0;z-index:20;background:rgba(251,248,243,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  header.top .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{display:flex;align-items:center;gap:10px;font-family:"Bricolage Grotesque";font-weight:800;font-size:20px;text-decoration:none;color:inherit}
+  nav a{text-decoration:none;font-weight:500;color:var(--muted);margin-left:22px;font-size:15px}
+  nav a:hover,nav a.on{color:var(--ink)}
+  .btn{display:inline-flex;border-radius:999px;padding:9px 18px;font:600 15px Inter;text-decoration:none;background:var(--clay);color:#fff!important}
+  .btn-white{background:#fff!important;color:var(--ink)!important;border:1.5px solid var(--line)}
+  @media(max-width:700px){nav a:not(.btn):not(.on){display:none}}
+  @media(max-width:520px){nav .btn{padding:8px 12px!important;margin-left:6px!important;font-size:14px!important}}
+  @media(max-width:400px){.logo > span{display:none}}
+  .head{padding:56px 0 18px}
+  .eyebrow{font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--clay);margin-bottom:10px}
+  .head h1{font-size:clamp(32px,5vw,52px)}
+  .cols{display:grid;grid-template-columns:1.4fr 1fr;gap:28px;padding-bottom:72px}
+  @media(max-width:860px){.cols{grid-template-columns:1fr}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:14px}
+  .card.imp{border-color:#f0b48f;background:#fff6ef}
+  .date{font-size:13px;color:var(--muted);margin-bottom:6px}
+  .card h3{font-size:20px;margin-bottom:6px}
+  .card p{margin:0;white-space:pre-line;color:#3b3833}
+  .ev{display:flex;gap:14px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line)}
+  .ev:last-child{border:0}
+  .cal{flex:none;width:52px;text-align:center;background:var(--green);color:#fff;border-radius:10px;padding:6px 0}
+  .cal b{display:block;font-family:"Bricolage Grotesque";font-size:20px;line-height:1}
+  .cal small{font-size:11px;text-transform:uppercase}
+  .muted{color:var(--muted)}
+  footer{background:var(--green);color:#a9b8ab;padding:28px 0;font-size:14px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="./">
+      <img src="lOGO.jpg" alt="ŠRD Straža" style="height:46px;width:auto;border-radius:8px">
+      <span style="line-height:1.05">ŠRD Straža<small style="display:block;font:500 12px Inter;color:var(--muted)">Tenis center Obrul</small></span>
+    </a>
+    <nav>
+      <a href="./#igrisca">Igrišča</a>
+      <a href="novice.html" class="on">Novice</a>
+      <a href="./#cenik">Cenik</a>
+      <a href="./#kontakt">Kontakt</a>
+      <a class="btn btn-white" href="galerija.html" style="margin-left:22px">Galerija</a>
+      <a class="btn" href="./#rezervacija" style="margin-left:10px">Rezerviraj</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap head">
+  <div class="eyebrow">Novice</div>
+  <h1>Novice, obvestila in turnirji</h1>
+</div>
+
+<div class="wrap cols">
+  <div>
+    <h2 style="font-size:22px;margin-bottom:14px">Obvestila</h2>
+    <div id="news"><p class="muted">Nalagam …</p></div>
+  </div>
+  <div>
+    <h2 style="font-size:22px;margin-bottom:14px">Prihajajoči turnirji in dogodki</h2>
+    <div class="card" id="events"><p class="muted">Nalagam …</p></div>
+    <p class="muted" style="font-size:14px">V času turnirjev in drugih dogodkov igrišča niso na voljo za rezervacijo.</p>
+  </div>
+</div>
+
+<footer><div class="wrap">© 2026 ŠRD Straža · Tenis center Obrul · 031 528 978</div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js?v=3"></script>
+<script>
+const sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+const pad = n => String(n).padStart(2,"0");
+const hm = m => (m===1440?"24":pad(Math.floor(m/60)))+":"+pad(m%60);
+const MON = ["jan","feb","mar","apr","maj","jun","jul","avg","sep","okt","nov","dec"];
+const KIND = {turnir:"Turnir",trening:"Trening",vzdrzevanje:"Vzdrževanje igrišča",drugo:"Dogodek"};
+const el = (tag, cls, txt) => { const e=document.createElement(tag); if(cls) e.className=cls; if(txt!=null) e.textContent=txt; return e; };
+const today = () => { const d=new Date(); return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); };
+
+(async () => {
+  const { data: news } = await sb.from("news").select("*").order("created_at", { ascending:false }).limit(30);
+  const nb = document.getElementById("news"); nb.innerHTML = "";
+  if (!news || !news.length) nb.appendChild(el("p","muted","Trenutno ni novic."));
+  (news||[]).forEach(n => {
+    const c = el("div", "card" + (n.important ? " imp" : ""));
+    c.appendChild(el("div","date", new Date(n.created_at).toLocaleDateString("sl-SI", { day:"numeric", month:"long", year:"numeric" }) + (n.important ? " · pomembno" : "")));
+    c.appendChild(el("h3", null, n.title));
+    if (n.body) c.appendChild(el("p", null, n.body));
+    nb.appendChild(c);
+  });
+
+  const { data: bl } = await sb.from("blocks").select("*").gte("date", today()).order("date").order("start_min").limit(200);
+  const eb = document.getElementById("events"); eb.innerHTML = "";
+  const groups = [];
+  (bl||[]).forEach(b => {
+    const g = groups.find(x => x.title === b.title && x.kind === b.kind && x.last && (new Date(b.date) - new Date(x.last)) <= 864e5);
+    if (g) { g.last = b.date; g.to = b.date; } else groups.push({ title:b.title, kind:b.kind, from:b.date, to:b.date, last:b.date, s:b.start_min, e:b.end_min, courts:b.courts });
+  });
+  if (!groups.length) eb.appendChild(el("p","muted","Ni napovedanih dogodkov."));
+  groups.slice(0, 20).forEach(g => {
+    const r = el("div","ev"); const d = new Date(g.from+"T12:00:00");
+    const cal = el("div","cal"); cal.appendChild(el("b",null,d.getDate())); cal.appendChild(el("small",null,MON[d.getMonth()])); r.appendChild(cal);
+    const t = el("div"); t.appendChild(el("b",null,g.title));
+    const to = new Date(g.to+"T12:00:00");
+    t.appendChild(el("div","muted", KIND[g.kind] + " · " + (g.from!==g.to ? "do " + to.getDate() + ". " + (to.getMonth()+1) + ". · " : "") + hm(g.s) + "–" + hm(g.e) + " · igrišče " + g.courts.join(" in ")));
+    r.appendChild(t); eb.appendChild(r);
+  });
+})();
+</script>
+</body>
+</html>

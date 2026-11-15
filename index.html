@@ -12,7 +12,7 @@
 <meta property="og:description" content="ŠRD Straža – Tenis center Obrul. Rezerviraj tenis igrišče na spletu, vsak dan od 7. do 24. ure.">
 <meta property="og:image" content="https://tenis-center-obrul.si/lOGO.jpg">
 <meta property="og:locale" content="sl_SI">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"SportsActivityLocation","name":"Tenis center Obrul","alternateName":["ŠRD Straža","Športno-rekreacijsko društvo Straža","Tenis Obrul"],"url":"https://tenis-center-obrul.si/","logo":"https://tenis-center-obrul.si/lOGO.jpg","image":"https://tenis-center-obrul.si/lOGO.jpg","telephone":"+386 31 528 978","description":"Tenis center Obrul (ŠRD Straža) – dve tenis igrišči z reflektorji, spletna rezervacija terminov.","sport":"Tennis","openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],"opens":"07:00","closes":"23:59"}],"priceRange":"10 €/h","parentOrganization":{"@type":"SportsOrganization","name":"Športno-rekreacijsko društvo Straža"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SportsActivityLocation","name":"Tenis center Obrul","alternateName":["ŠRD Straža","Športno-rekreacijsko društvo Straža","Tenis Obrul"],"url":"https://tenis-center-obrul.si/","logo":"https://tenis-center-obrul.si/lOGO.jpg","image":"https://tenis-center-obrul.si/lOGO.jpg","address":{"@type":"PostalAddress","streetAddress":"Straža pri Oplotnici 17","postalCode":"2317","addressLocality":"Oplotnica","addressCountry":"SI"},"geo":{"@type":"GeoCoordinates","latitude":46.3818416,"longitude":15.4773521},"telephone":"+386 31 528 978","description":"Tenis center Obrul (ŠRD Straža) – dve tenis igrišči z reflektorji, spletna rezervacija terminov.","sport":"Tennis","openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],"opens":"07:00","closes":"23:59"}],"priceRange":"10 €/h","parentOrganization":{"@type":"SportsOrganization","name":"Športno-rekreacijsko društvo Straža"}}</script>
 <title>Tenis center Obrul – rezervacija tenis igrišč | ŠRD Straža</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -146,6 +146,13 @@
   .slot{height:34px}
   .grid tr:not(.full) td.time{font-weight:400;font-size:12px;color:#a29c92}
   .grid tr.full td{padding-top:4px}
+  .slot.event{background:#fdf0c4;color:#7a5a00;cursor:default;font-size:12px;font-weight:600}
+  .day.has-event{position:relative}
+  .day.has-event::after{content:"";position:absolute;top:6px;right:8px;width:7px;height:7px;border-radius:50%;background:#e0a100}
+  .news-banner{display:none;background:#fff6ef;border:1.5px solid #f0b48f;color:#5a2a12;border-radius:14px;padding:14px 18px;margin-bottom:18px;font-size:15px}
+  .news-banner a{color:#c8562e;font-weight:600;margin-left:6px}
+  .map{grid-column:1/-1;border-radius:16px;overflow:hidden;border:1px solid var(--line);height:340px;background:#e9e4da}
+  .map iframe{width:100%;height:100%;border:0;display:block}
 </style>
 </head>
 <body>
@@ -158,6 +165,7 @@
     </a>
     <nav>
       <a href="#igrisca">Igrišča</a>
+      <a href="novice.html">Novice</a>
       <a href="#cenik">Cenik</a>
       <a href="#kontakt">Kontakt</a>
       <a class="btn btn-white" href="galerija.html" style="padding:9px 18px;margin-left:22px">Galerija</a>
@@ -188,8 +196,9 @@
   <div class="wrap">
     <div class="eyebrow">Rezervacija</div>
     <h2 class="sec-title">Izberi termin</h2>
-    <p class="sec-sub">Termin lahko rezerviraš na pol ure natančno, od 30 minut do 3 ur. Klikni začetek termina, izberi trajanje in vpiši svoje podatke. Rezervacijo lahko v tem brskalniku prekličeš spodaj pod »Moje rezervacije«, sicer pokliči 031 528 978.</p>
+    <p class="sec-sub">Termin lahko rezerviraš na pol ure natančno, od 30 minut do 3 ur, tudi kot ponavljajoč termin vsak teden. Klikni začetek termina, izberi trajanje in vpiši svoje podatke. Če vpišeš e-naslov, dobiš potrditev s povezavo za preklic. Na dan lahko rezerviraš največ 2 termina. Rezervacijo lahko v tem brskalniku prekličeš spodaj pod »Moje rezervacije«, sicer pokliči 031 528 978.</p>
 
+    <div class="news-banner" id="newsBanner">📢 <b></b><span></span><a href="novice.html">Več →</a></div>
     <div class="booking">
       <div class="banner" id="banner"></div>
       <div class="days" id="days"></div>
@@ -246,6 +255,7 @@
       <div class="eyebrow">Kontakt</div>
       <h2 class="sec-title">Pridi na igrišče</h2>
       <div class="info-item" style="margin-top:24px"><div class="ic">📞</div><div><b>Telefon</b><a href="tel:+38631528978">031 528 978</a></div></div>
+      <div class="info-item"><div class="ic">📍</div><div><b>Naslov</b><span>Straža pri Oplotnici 17, 2317 Oplotnica</span><br><a href="https://www.google.com/maps/dir/?api=1&destination=Tenis+Center+Obrul,+Stra%C5%BEa+pri+Oplotnici+17,+2317+Oplotnica" target="_blank" rel="noopener" style="color:var(--clay);font-weight:600;font-size:14px">Navodila za pot →</a></div></div>
       <div class="info-item"><div class="ic">🎾</div><div><b>Društvo</b><span>Športno-rekreacijsko društvo Straža</span></div></div>
     </div>
     <div class="hours">
@@ -253,6 +263,7 @@
       <div class="prow"><span>Vsak dan</span><b>7:00 – 24:00</b></div>
       <p class="notice">Za vprašanja pokliči 031 528 978.</p>
     </div>
+    <div class="map"><iframe title="Zemljevid – Tenis Center Obrul" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Tenis+Center+Obrul,+Stra%C5%BEa+pri+Oplotnici+17,+2317+Oplotnica&z=15&output=embed"></iframe></div>
   </div>
 </section>
 
@@ -270,6 +281,8 @@
         <div class="field"><label for="fPhone">Telefon</label><input id="fPhone" required maxlength="20" autocomplete="tel" inputmode="tel"></div>
         <div class="field"><label for="fPlayers">Igralci</label><select id="fPlayers"><option>2</option><option>3</option><option>4</option></select></div>
       </div>
+      <div class="field"><label for="fEmail">E-pošta (neobvezno – za potrditev in preklic)</label><input id="fEmail" type="email" maxlength="80" autocomplete="email" inputmode="email"></div>
+      <div class="field"><label for="fRepeat">Ponavljanje</label><select id="fRepeat"><option value="1">Samo enkrat</option><option value="2">Vsak teden – 2 tedna</option><option value="3">Vsak teden – 3 tedne</option><option value="4">Vsak teden – 4 tedne</option><option value="6">Vsak teden – 6 tednov</option><option value="8">Vsak teden – 8 tednov</option></select></div>
       <div class="field"><label for="fNote">Opomba (neobvezno)</label><input id="fNote" maxlength="120"></div>
     </div>
     <div class="notice" id="fPrice" style="margin:0 0 6px;font-weight:600;color:var(--ink)"></div>
@@ -284,6 +297,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js?v=3"></script>
-<script src="app.js?v=4"></script>
+<script src="app.js?v=5"></script>
 </body>
 </html>

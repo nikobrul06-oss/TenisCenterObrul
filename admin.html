@@ -9,93 +9,232 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   body{margin:0;font-family:Inter,system-ui,sans-serif;background:#fbf8f3;color:#1c1c1a}
-  .wrap{max-width:900px;margin:0 auto;padding:32px 20px}
+  .wrap{max-width:980px;margin:0 auto;padding:28px 18px 60px}
   h1{font-family:"Bricolage Grotesque";font-size:30px;margin:0 0 4px}
+  h2{font-family:"Bricolage Grotesque";font-size:20px;margin:0 0 12px}
   .muted{color:#6d685f}
-  .box{background:#fff;border:1px solid #e7e1d8;border-radius:16px;padding:22px;margin-top:22px}
-  input{border:1.5px solid #e7e1d8;border-radius:10px;padding:10px 12px;font:15px Inter;width:100%;box-sizing:border-box;margin-bottom:10px}
+  .box{background:#fff;border:1px solid #e7e1d8;border-radius:16px;padding:20px;margin-top:18px}
+  input,select,textarea{border:1.5px solid #e7e1d8;border-radius:10px;padding:10px 12px;font:15px Inter;width:100%;box-sizing:border-box;background:#fff}
+  textarea{min-height:90px;resize:vertical}
+  label{display:block;font-size:13px;font-weight:600;margin:10px 0 5px}
   button{border:0;border-radius:999px;padding:10px 18px;font:600 14px Inter;cursor:pointer;background:#c8562e;color:#fff}
   button.ghost{background:transparent;border:1.5px solid #e7e1d8;color:#1c1c1a}
   table{width:100%;border-collapse:collapse;font-size:14px}
-  th,td{text-align:left;padding:10px 8px;border-bottom:1px solid #eee7dc;vertical-align:top}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid #eee7dc;vertical-align:top}
   th{font-weight:600;color:#6d685f;font-size:12px;text-transform:uppercase;letter-spacing:.05em}
   tr.day td{background:#f3eee6;font-weight:600}
   .del{background:none;color:#b3261e;padding:0}
   .err{color:#b3261e;min-height:20px;font-size:14px}
+  .ok{color:#2d5a3f;min-height:20px;font-size:14px}
   .top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+  .tabs{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap}
+  .tab{background:#fff;color:#1c1c1a;border:1.5px solid #e7e1d8}
+  .tab.on{background:#1f3d2b;border-color:#1f3d2b;color:#fff}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 14px}
+  @media(max-width:640px){.grid2,.grid3{grid-template-columns:1fr}}
+  .checks{display:flex;gap:16px;align-items:center;padding-top:6px}
+  .checks label{display:flex;gap:6px;align-items:center;margin:0;font-weight:500}
+  .checks input{width:auto}
+  .pill{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;background:#f3eee6;margin-left:6px}
+  .scroll{overflow-x:auto}
+  .item{border-bottom:1px solid #eee7dc;padding:12px 0;display:flex;justify-content:space-between;gap:12px}
+  .item:last-child{border:0}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="top">
-    <div style="display:flex;gap:14px;align-items:center"><img src="lOGO.jpg" alt="" style="height:56px;border-radius:8px"><div><h1>Rezervacije</h1><div class="muted">ŠRD Straža · Tenis center Obrul</div></div></div>
+    <div style="display:flex;gap:14px;align-items:center"><img src="lOGO.jpg" alt="" style="height:56px;border-radius:8px"><div><h1>Skrbnik</h1><div class="muted">ŠRD Straža · Tenis center Obrul</div></div></div>
     <div><a href="./" class="muted">← Na stran</a> <button class="ghost" id="logout" style="display:none;margin-left:10px">Odjava</button></div>
   </div>
 
   <div class="box" id="loginBox" style="max-width:360px">
     <form id="login">
-      <input id="email" type="email" placeholder="E-pošta" required autocomplete="username">
-      <input id="pass" type="password" placeholder="Geslo" required autocomplete="current-password">
+      <input id="email" type="email" placeholder="E-pošta" required autocomplete="username" style="margin-bottom:10px">
+      <input id="pass" type="password" placeholder="Geslo" required autocomplete="current-password" style="margin-bottom:10px">
       <div class="err" id="lErr"></div>
       <button type="submit">Prijava</button>
     </form>
   </div>
 
-  <div class="box" id="listBox" style="display:none">
-    <div class="top" style="margin-bottom:12px">
-      <label class="muted"><input type="checkbox" id="showPast" style="width:auto;margin:0 6px 0 0">Pokaži pretekle</label>
-      <button class="ghost" id="refresh">Osveži</button>
+  <div id="app" style="display:none">
+    <div class="tabs">
+      <button class="tab on" data-tab="rez">Rezervacije</button>
+      <button class="tab" data-tab="tur">Turnirji in zaprti termini</button>
+      <button class="tab" data-tab="nov">Novice in obvestila</button>
     </div>
-    <table><thead><tr><th>Ura</th><th>Igrišče</th><th>Ime</th><th>Telefon</th><th>Igralci</th><th>Opomba</th><th></th></tr></thead><tbody id="rows"></tbody></table>
-    <p class="muted" id="empty" style="display:none">Ni rezervacij.</p>
+
+    <div class="box" id="tab-rez">
+      <div class="top" style="margin-bottom:12px">
+        <label class="muted" style="display:flex;gap:6px;align-items:center;margin:0;font-weight:500"><input type="checkbox" id="showPast" style="width:auto">Pokaži pretekle</label>
+        <button class="ghost" id="refresh">Osveži</button>
+      </div>
+      <div class="scroll"><table><thead><tr><th>Ura</th><th>Igrišče</th><th>Ime</th><th>Telefon</th><th>E-pošta</th><th>Igr.</th><th>Opomba</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
+      <p class="muted" id="empty" style="display:none">Ni rezervacij.</p>
+    </div>
+
+    <div id="tab-tur" style="display:none">
+      <div class="box">
+        <h2>Zapri termine (turnir, trening, vzdrževanje)</h2>
+        <form id="blockForm">
+          <div class="grid2">
+            <div><label for="bTitle">Naziv</label><input id="bTitle" required maxlength="80" placeholder="npr. Jesenski turnir dvojic"></div>
+            <div><label for="bKind">Vrsta</label><select id="bKind"><option value="turnir">Turnir</option><option value="trening">Trening</option><option value="vzdrzevanje">Vzdrževanje igrišča</option><option value="drugo">Drugo</option></select></div>
+          </div>
+          <div class="grid2">
+            <div><label for="bFrom">Od datuma</label><input id="bFrom" type="date" required></div>
+            <div><label for="bTo">Do datuma (za večdnevne)</label><input id="bTo" type="date"></div>
+          </div>
+          <div class="grid3">
+            <div><label for="bStart">Od ure</label><select id="bStart"></select></div>
+            <div><label for="bEnd">Do ure</label><select id="bEnd"></select></div>
+            <div><label>Igrišča</label><div class="checks"><label><input type="checkbox" id="bC1" checked> 1</label><label><input type="checkbox" id="bC2" checked> 2</label></div></div>
+          </div>
+          <div class="err" id="bErr"></div><div class="ok" id="bOk"></div>
+          <button type="submit">Zapri termine</button>
+        </form>
+      </div>
+      <div class="box">
+        <h2>Prihajajoči zaprti termini</h2>
+        <div id="blockList" class="muted">Nalagam …</div>
+      </div>
+    </div>
+
+    <div id="tab-nov" style="display:none">
+      <div class="box">
+        <h2>Nova novica ali obvestilo</h2>
+        <form id="newsForm">
+          <label for="nTitle">Naslov</label><input id="nTitle" required maxlength="120" placeholder="npr. Igrišče 2 danes zaprto zaradi dežja">
+          <label for="nBody">Besedilo</label><textarea id="nBody" maxlength="3000"></textarea>
+          <div class="checks" style="margin:10px 0"><label><input type="checkbox" id="nImp"> Pomembno obvestilo (prikaže se na vrhu glavne strani 30 dni)</label></div>
+          <div class="err" id="nErr"></div><div class="ok" id="nOk"></div>
+          <button type="submit">Objavi</button>
+        </form>
+      </div>
+      <div class="box">
+        <h2>Objavljeno</h2>
+        <div id="newsList" class="muted">Nalagam …</div>
+      </div>
+    </div>
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js"></script>
+<script src="config.js?v=3"></script>
 <script>
 const sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
 const $ = id => document.getElementById(id);
 const pad = n => String(n).padStart(2,"0");
 const hm = m => (m===1440?"24":pad(Math.floor(m/60)))+":"+pad(m%60);
 const DOW = ["nedelja","ponedeljek","torek","sreda","četrtek","petek","sobota"];
+const KIND = {turnir:"Turnir",trening:"Trening",vzdrzevanje:"Vzdrževanje",drugo:"Drugo"};
 const today = () => { const d=new Date(); return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); };
+const niceDate = s => { const d=new Date(s+"T12:00:00"); return DOW[d.getDay()]+", "+d.getDate()+". "+(d.getMonth()+1)+". "+d.getFullYear(); };
+function confirmBtn(btn, fn){ let armed=false; btn.onclick=async()=>{ if(!armed){armed=true;btn.textContent="Potrdi brisanje";setTimeout(()=>{armed=false;btn.textContent="Izbriši";},3000);return;} await fn(); }; }
+
+for (let m=420; m<=1440; m+=30) {
+  if (m<1440) { const o=document.createElement("option"); o.value=m; o.textContent=hm(m); $("bStart").appendChild(o); }
+  if (m>420) { const o=document.createElement("option"); o.value=m; o.textContent=hm(m); $("bEnd").appendChild(o); }
+}
+$("bStart").value="420"; $("bEnd").value="1440";
+
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{
+  document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("on",x===t));
+  ["rez","tur","nov"].forEach(k=>$("tab-"+k).style.display = k===t.dataset.tab ? "block":"none");
+  if(t.dataset.tab==="tur") loadBlocks(); if(t.dataset.tab==="nov") loadNews(); if(t.dataset.tab==="rez") load();
+});
 
 async function show(){
   const { data:{ session } } = await sb.auth.getSession();
   $("loginBox").style.display = session ? "none" : "block";
-  $("listBox").style.display = session ? "block" : "none";
+  $("app").style.display = session ? "block" : "none";
   $("logout").style.display = session ? "inline-block" : "none";
   if(session) load();
 }
 
 async function load(){
-  let q = sb.from("bookings").select("id,date,court,start_min,dur_min,name,phone,players,note").order("date").order("start_min").order("court");
+  let q = sb.from("bookings").select("id,date,court,start_min,dur_min,name,phone,email,players,note,series_id").order("date").order("start_min").order("court");
   if(!$("showPast").checked) q = q.gte("date", today());
   const { data, error } = await q;
   const tb = $("rows"); tb.innerHTML = "";
-  if(error){ tb.innerHTML = '<tr><td colspan="7">Napaka pri nalaganju.</td></tr>'; console.log(error); return; }
+  if(error){ tb.innerHTML = '<tr><td colspan="8">Napaka pri nalaganju.</td></tr>'; console.log(error); return; }
   $("empty").style.display = data.length ? "none" : "block";
   let last = "";
   data.forEach(b=>{
     if(b.date!==last){
-      last=b.date; const d=new Date(b.date+"T12:00:00");
+      last=b.date;
       const tr=document.createElement("tr"); tr.className="day";
-      const td=document.createElement("td"); td.colSpan=7; td.textContent=DOW[d.getDay()]+", "+d.getDate()+". "+(d.getMonth()+1)+". "+d.getFullYear();
+      const td=document.createElement("td"); td.colSpan=8; td.textContent=niceDate(b.date);
       tr.appendChild(td); tb.appendChild(tr);
     }
     const tr=document.createElement("tr");
-    [hm(b.start_min)+"–"+hm(b.start_min+b.dur_min), "Igrišče "+b.court, b.name, b.phone, b.players, b.note||""].forEach(v=>{
+    [hm(b.start_min)+"–"+hm(b.start_min+b.dur_min), "Igrišče "+b.court, b.name + (b.series_id?" 🔁":""), b.phone, b.email||"", b.players, b.note||""].forEach(v=>{
       const td=document.createElement("td"); td.textContent=v; tr.appendChild(td);
     });
     const td=document.createElement("td"); const x=document.createElement("button"); x.className="del"; x.textContent="Izbriši";
-    let armed=false;
-    x.onclick=async()=>{
-      if(!armed){ armed=true; x.textContent="Potrdi brisanje"; setTimeout(()=>{armed=false;x.textContent="Izbriši";},3000); return; }
-      const { error } = await sb.from("bookings").delete().eq("id", b.id);
-      if(error){ x.textContent="Napaka"; console.log(error); } else load();
-    };
+    confirmBtn(x, async()=>{ const { error } = await sb.from("bookings").delete().eq("id", b.id); if(error){ x.textContent="Napaka"; console.log(error);} else load(); });
     td.appendChild(x); tr.appendChild(td); tb.appendChild(tr);
+  });
+}
+
+$("blockForm").addEventListener("submit", async e=>{
+  e.preventDefault(); $("bErr").textContent=""; $("bOk").textContent="";
+  const title=$("bTitle").value.trim(), kind=$("bKind").value, from=$("bFrom").value, to=$("bTo").value||from;
+  const s=Number($("bStart").value), en=Number($("bEnd").value);
+  const courts=[ $("bC1").checked?1:null, $("bC2").checked?2:null ].filter(Boolean);
+  if(!courts.length){ $("bErr").textContent="Izberi vsaj eno igrišče."; return; }
+  if(en<=s){ $("bErr").textContent="Konec mora biti po začetku."; return; }
+  if(to<from){ $("bErr").textContent="Končni datum je pred začetnim."; return; }
+  const rows=[]; let d=new Date(from+"T12:00:00"); const end=new Date(to+"T12:00:00");
+  while(d<=end && rows.length<31){ rows.push({date:d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()), start_min:s, end_min:en, courts, title, kind}); d.setDate(d.getDate()+1); }
+  const { error } = await sb.from("blocks").insert(rows);
+  if(error){ $("bErr").textContent="Shranjevanje ni uspelo."; console.log(error); return; }
+  const { data:clash } = await sb.from("bookings").select("date,court,start_min,dur_min,name,phone").gte("date",from).lte("date",to).in("court",courts).lt("start_min",en);
+  const conf=(clash||[]).filter(b=>b.start_min+b.dur_min>s);
+  $("bOk").textContent = "Shranjeno ("+rows.length+" "+(rows.length===1?"dan":"dni")+")." + (conf.length? " Pozor: v tem času je že "+conf.length+" rezervacij – "+conf.map(b=>b.name+" ("+b.phone+", "+b.date.slice(5)+" "+hm(b.start_min)+")").join("; ")+". Obvesti jih in jih izbriši v zavihku Rezervacije." : "");
+  $("blockForm").reset(); $("bStart").value="420"; $("bEnd").value="1440"; $("bC1").checked=true; $("bC2").checked=true;
+  loadBlocks();
+});
+
+async function loadBlocks(){
+  const { data, error } = await sb.from("blocks").select("*").gte("date", today()).order("date").order("start_min");
+  const box=$("blockList"); box.innerHTML="";
+  if(error){ box.textContent="Napaka pri nalaganju."; return; }
+  if(!data.length){ box.textContent="Ni zaprtih terminov."; return; }
+  data.forEach(b=>{
+    const it=document.createElement("div"); it.className="item";
+    const l=document.createElement("div");
+    const t=document.createElement("b"); t.textContent=b.title; l.appendChild(t);
+    const p=document.createElement("span"); p.className="pill"; p.textContent=KIND[b.kind]||b.kind; l.appendChild(p);
+    const s=document.createElement("div"); s.className="muted"; s.textContent=niceDate(b.date)+" · "+hm(b.start_min)+"–"+hm(b.end_min)+" · igrišče "+b.courts.join(" in "); l.appendChild(s);
+    const x=document.createElement("button"); x.className="del"; x.textContent="Izbriši";
+    confirmBtn(x, async()=>{ await sb.from("blocks").delete().eq("id",b.id); loadBlocks(); });
+    it.appendChild(l); it.appendChild(x); box.appendChild(it);
+  });
+}
+
+$("newsForm").addEventListener("submit", async e=>{
+  e.preventDefault(); $("nErr").textContent=""; $("nOk").textContent="";
+  const { error } = await sb.from("news").insert({ title:$("nTitle").value.trim(), body:$("nBody").value.trim(), important:$("nImp").checked });
+  if(error){ $("nErr").textContent="Objava ni uspela."; console.log(error); return; }
+  $("nOk").textContent="Objavljeno."; $("newsForm").reset(); loadNews();
+});
+
+async function loadNews(){
+  const { data, error } = await sb.from("news").select("*").order("created_at",{ascending:false}).limit(50);
+  const box=$("newsList"); box.innerHTML="";
+  if(error){ box.textContent="Napaka pri nalaganju."; return; }
+  if(!data.length){ box.textContent="Ni objav."; return; }
+  data.forEach(n=>{
+    const it=document.createElement("div"); it.className="item";
+    const l=document.createElement("div");
+    const t=document.createElement("b"); t.textContent=n.title; l.appendChild(t);
+    if(n.important){ const p=document.createElement("span"); p.className="pill"; p.textContent="pomembno"; l.appendChild(p); }
+    const s=document.createElement("div"); s.className="muted"; s.textContent=new Date(n.created_at).toLocaleDateString("sl-SI")+(n.body?" · "+n.body.slice(0,120):""); l.appendChild(s);
+    const x=document.createElement("button"); x.className="del"; x.textContent="Izbriši";
+    confirmBtn(x, async()=>{ await sb.from("news").delete().eq("id",n.id); loadNews(); });
+    it.appendChild(l); it.appendChild(x); box.appendChild(it);
   });
 }
 

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="icon" href="lOGO.jpg">
+<title>Preklic rezervacije — Tenis center Obrul</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;font-family:Inter,system-ui,sans-serif;background:#fbf8f3;color:#1c1c1a;line-height:1.5}
+  .wrap{max-width:520px;margin:0 auto;padding:40px 20px}
+  h1{font-family:"Bricolage Grotesque";font-size:28px;margin:18px 0 8px}
+  .box{background:#fff;border:1px solid #e7e1d8;border-radius:16px;padding:22px;margin-top:16px}
+  .muted{color:#6d685f}
+  .row{padding:8px 0;border-bottom:1px solid #eee7dc}.row:last-child{border:0}
+  button{border:0;border-radius:999px;padding:12px 22px;font:600 15px Inter;cursor:pointer;background:#c8562e;color:#fff;margin-top:16px}
+  button:disabled{opacity:.6}
+  a{color:#c8562e}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a href="./"><img src="lOGO.jpg" alt="ŠRD Straža – Tenis center Obrul" style="height:64px;border-radius:8px"></a>
+  <h1>Preklic rezervacije</h1>
+  <div class="box" id="box"><p class="muted">Nalagam …</p></div>
+  <p class="muted" style="margin-top:18px">Težave? Pokliči 031 528 978. · <a href="./">Na glavno stran</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js?v=3"></script>
+<script>
+const sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+const pad = n => String(n).padStart(2,"0");
+const hm = m => (m===1440?"24":pad(Math.floor(m/60)))+":"+pad(m%60);
+const DOW = ["nedelja","ponedeljek","torek","sreda","četrtek","petek","sobota"];
+const nice = s => { const d=new Date(s+"T12:00:00"); return DOW[d.getDay()]+", "+d.getDate()+". "+(d.getMonth()+1)+". "+d.getFullYear(); };
+const q = new URLSearchParams(location.search);
+const box = document.getElementById("box");
+const el = (t, c, x) => { const e=document.createElement(t); if(c) e.className=c; if(x!=null) e.textContent=x; return e; };
+function msg(t){ box.innerHTML=""; box.appendChild(el("p",null,t)); }
+
+(async () => {
+  const id=q.get("id"), s=q.get("s"), t=q.get("t");
+  if (!t || (!id && !s)) return msg("Povezava za preklic ni veljavna.");
+  const { data, error } = s ? await sb.rpc("series_info",{p_series:s,p_token:t}) : await sb.rpc("booking_info",{p_id:id,p_token:t});
+  if (error || !data || !data.length) return msg("Te rezervacije ni več – morda je že preklicana ali je termin že mimo.");
+  box.innerHTML = "";
+  box.appendChild(el("p",null,"Pozdravljeni, " + data[0].name + ". " + (s ? "Preklicali boste vse prihodnje termine:" : "Preklicali boste ta termin:")));
+  data.forEach(b => box.appendChild(el("div","row", nice(b.date)+" · "+hm(b.start_min)+"–"+hm(b.start_min+b.dur_min)+" · igrišče "+b.court)));
+  const btn = el("button", null, s ? "Prekliči vse termine" : "Prekliči rezervacijo");
+  btn.onclick = async () => {
+    btn.disabled = true;
+    const r = s ? await sb.rpc("cancel_series",{p_series:s,p_token:t}) : await sb.rpc("cancel_booking",{p_id:id,p_token:t});
+    if (r.error || r.data === false || r.data === 0) { btn.disabled=false; return alertBox("Preklic ni uspel. Pokliči 031 528 978."); }
+    msg(s ? "Preklicanih terminov: " + r.data + ". Hvala, da ste nam sporočili!" : "Rezervacija je preklicana. Hvala, da ste nam sporočili!");
+  };
+  box.appendChild(btn);
+})();
+function alertBox(t){ const p=el("p",null,t); p.style.color="#b3261e"; box.appendChild(p); }
+</script>
+</body>
+</html>

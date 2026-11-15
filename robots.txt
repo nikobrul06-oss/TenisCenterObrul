@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /admin.html
+Disallow: /preklic.html
 
 Sitemap: https://tenis-center-obrul.si/sitemap.xml
