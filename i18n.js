@@ -104,6 +104,9 @@
     ["maj", "May", "Mai"], ["junij", "June", "Juni"], ["julij", "July", "Juli"], ["avgust", "August", "August"],
     ["september", "September", "September"], ["oktober", "October", "Oktober"], ["november", "November", "November"], ["december", "December", "Dezember"],
     ["avg", "Aug", "Aug"], ["okt", "Oct", "Okt"],
+    ["rezervacija tenis igrišč", "tennis court booking", "Tennisplatz-Buchung"],
+    ["Novice in turnirji", "News and tournaments", "Neuigkeiten und Turniere"],
+    ["Galerija — ŠRD Straža, Tenis center Obrul", "Gallery — ŠRD Straža, Tenis Center Obrul", "Galerie — ŠRD Straža, Tenis Center Obrul"],
     ["Igraj. Ponovi.", "Play. Repeat.", "Spielen. Wiederholen."]
   ];
   const LANGS = { sl: -1, en: 1, de: 2 };
