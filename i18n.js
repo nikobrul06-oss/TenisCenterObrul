@@ -107,7 +107,13 @@
     ["rezervacija tenis igrišč", "tennis court booking", "Tennisplatz-Buchung"],
     ["Novice in turnirji", "News and tournaments", "Neuigkeiten und Turniere"],
     ["Galerija — ŠRD Straža, Tenis center Obrul", "Gallery — ŠRD Straža, Tenis Center Obrul", "Galerie — ŠRD Straža, Tenis Center Obrul"],
-    ["Igraj. Ponovi.", "Play. Repeat.", "Spielen. Wiederholen."]
+    ["Igraj. Ponovi.", "Play. Repeat.", "Spielen. Wiederholen."],
+    ["Zimski čas – igrišča so zaprta", "Winter season – the courts are closed", "Winterzeit – die Plätze sind geschlossen"],
+    ["Nova sezona se začne", "The new season starts on", "Die neue Saison beginnt am"],
+    ["Rezervacije bodo na voljo 14 dni pred začetkom sezone.", "Bookings open 14 days before the season starts.", "Buchungen sind ab 14 Tage vor Saisonbeginn möglich."],
+    ["Za informacije pokliči 031 528 978.", "For information call 031 528 978.", "Für Informationen ruf 031 528 978 an."],
+    ["Igrišča so pozimi zaprta – rezervacije so mogoče od", "The courts are closed in winter – bookings are possible from", "Die Plätze sind im Winter geschlossen – Buchungen möglich ab"],
+    ["zimsko zaprtje", "winter closure", "Winterpause"], ["Zaprto", "Closed", "Geschlossen"]
   ];
   const LANGS = { sl: -1, en: 1, de: 2 };
   const esc = s => s.replace(/[.*+?^(){}$|[\]\\]/g, "\\$&");

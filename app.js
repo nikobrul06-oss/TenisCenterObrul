@@ -1,4 +1,4 @@
-// Rezervacije – ŠRD Straža, Tenis center Obrul (v3)
+// Rezervacije – ŠRD Straža, Tenis center Obrul (v4: sezonsko zaprtje)
 const COURTS = [
   { id: 1, name: "Igrišče 1", sub: "z reflektorji" },
   { id: 2, name: "Igrišče 2", sub: "z reflektorji" }
@@ -6,7 +6,7 @@ const COURTS = [
 const DAYS_AHEAD = 14;
 const OPEN = 7 * 60, CLOSE = 24 * 60, STEP = 30, MAX_DUR = 180;
 const PRICE_PER_HOUR = 10;
-const KIND = { turnir: "🏆 Turnir", trening: "🎾 Trening", vzdrzevanje: "🛠 Vzdrževanje", drugo: "Zasedeno" };
+const KIND = { turnir: "🏆 Turnir", trening: "🎾 Trening", vzdrzevanje: "🛠 Vzdrževanje", drugo: "Zasedeno", zaprto: "❄️ Zaprto" };
 const DOW = ["ned","pon","tor","sre","čet","pet","sob"];
 const DOW_LONG = ["nedelja","ponedeljek","torek","sreda","četrtek","petek","sobota"];
 const MONTHS = ["januar","februar","marec","april","maj","junij","julij","avgust","september","oktober","november","december"];
@@ -29,6 +29,7 @@ let taken = new Map();          // key -> booking_id
 let blocks = [];                // turnirji, treningi ...
 let selectedDate = ymd(new Date());
 let pending = null;
+let season = null;            // sezonsko (zimsko) zaprtje
 
 function loadMine() { try { return JSON.parse(localStorage.getItem("obrul_mine_v2") || "{}"); } catch (e) { return {}; } }
 function saveMine(m) { try { localStorage.setItem("obrul_mine_v2", JSON.stringify(m)); } catch (e) {} }
@@ -39,6 +40,26 @@ function showBanner(msg) { const b = $("banner"); b.textContent = msg; b.style.d
 
 function blockAt(date, court, min) {
   return blocks.find(b => b.date === date && b.courts.includes(court) && b.start_min <= min && b.end_min > min);
+}
+
+function seasonOn() { return !!(season && season.season_closed && season.closed_until && ymd(new Date()) < season.closed_until); }
+function applySeason() {
+  const box = $("closedBox"), bk = document.querySelector(".booking");
+  if (!box || !bk) return;
+  const on = seasonOn();
+  box.style.display = on ? "block" : "none";
+  bk.classList.remove("is-closed");
+  if (!on) return;
+  const p = season.closed_until.split("-").map(Number);
+  $("closedDate").textContent = p[2] + ". " + p[1] + ". " + p[0];
+  const today = new Date(); let all = true;
+  for (let i = 0; i < DAYS_AHEAD; i++) {
+    const d = new Date(today); d.setDate(today.getDate() + i); const s = ymd(d);
+    if (s < season.closed_until) blocks.push({ date: s, start_min: OPEN, end_min: CLOSE, courts: COURTS.map(c => c.id), title: "zimsko zaprtje", kind: "zaprto" });
+    else all = false;
+  }
+  bk.classList.toggle("is-closed", all);
+  if (!all && selectedDate < season.closed_until && !applySeason.moved) { selectedDate = season.closed_until; applySeason.moved = true; }
 }
 
 function renderDays() {
@@ -207,7 +228,7 @@ $("form").addEventListener("submit", async e => {
   } catch (err) {
     console.log(err);
     const m = (err && err.message) || "";
-    const known = /zaseden|turnir|največ 2|mimo|14 dni|e-naslov/i.test(m);
+    const known = /zaseden|turnir|največ 2|mimo|14 dni|e-naslov|zaprta/i.test(m);
     $("mErr").textContent = known ? m.replace(/^.*?: /, "") : "Rezervacija ni uspela. Poskusi znova ali pokliči 031 528 978.";
     if (/zaseden|turnir/i.test(m)) await loadSlots();
   } finally { btn.disabled = false; }
@@ -230,13 +251,16 @@ async function loadSlots() {
   if (!sb) return;
   const from = ymd(new Date());
   const to = new Date(); to.setDate(to.getDate() + DAYS_AHEAD);
-  const [s, b] = await Promise.all([
+  const [s, b, st] = await Promise.all([
     sb.rpc("taken_slots", { p_from: from, p_to: ymd(to) }),
-    sb.from("blocks").select("date,start_min,end_min,courts,title,kind").gte("date", from).lte("date", ymd(to))
+    sb.from("blocks").select("date,start_min,end_min,courts,title,kind").gte("date", from).lte("date", ymd(to)),
+    sb.from("site_settings").select("season_closed,closed_until").eq("id", 1).maybeSingle()
   ]);
   if (s.error) { console.log(s.error); $("status").textContent = "Terminov ni bilo mogoče naložiti."; return; }
   taken = new Map((s.data || []).map(r => [key(r.date, r.court, r.slot), r.booking_id]));
   blocks = b.error ? [] : (b.data || []);
+  season = st && !st.error ? st.data : null;
+  applySeason();
   $("status").textContent = "Termini se osvežujejo samodejno.";
   renderDays(); renderGrid();
 }

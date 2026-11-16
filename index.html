@@ -216,6 +216,13 @@
     <div class="news-banner" id="newsBanner">📢 <b data-noi18n></b><span data-noi18n></span><a href="novice.html">Več →</a></div>
     <div class="booking">
       <div class="banner" id="banner"></div>
+      <style>.closed-box{display:none;background:#eef4f8;border:1.5px solid #c9dce8;border-radius:16px;padding:18px 20px;margin-bottom:16px;color:#1c3a4f}.closed-box h3{margin:0 0 8px;font-size:20px}.closed-box p{margin:4px 0}.booking.is-closed .days,.booking.is-closed .legend,.booking.is-closed .grid-wrap,.booking.is-closed #weatherBar,.booking.is-closed #status{display:none!important}</style>
+      <div class="closed-box" id="closedBox">
+        <h3>❄️ Zimski čas – igrišča so zaprta</h3>
+        <p>Nova sezona se začne <b id="closedDate" data-noi18n></b>.</p>
+        <p>Rezervacije bodo na voljo 14 dni pred začetkom sezone.</p>
+        <p>Za informacije pokliči 031 528 978.</p>
+      </div>
       <div class="days" id="days"></div>
       <div class="legend">
         <span><i style="background:var(--free)"></i>Prosto</span>
@@ -313,7 +320,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js?v=3"></script>
-<script src="app.js?v=6"></script>
+<script src="app.js?v=7"></script>
 <script>
 (function(){
   const on=document.getElementById("fRepeatOn"), wrap=document.getElementById("fWeeksWrap"), wk=document.getElementById("fWeeks"), rep=document.getElementById("fRepeat");
@@ -324,6 +331,6 @@
 })();
 </script>
 <script src="weather.js?v=1"></script>
-<script src="i18n.js?v=1"></script>
+<script src="i18n.js?v=2"></script>
 </body>
 </html>
