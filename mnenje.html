@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<title>Oceni nas na Googlu — Tenis center Obrul</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  @page{size:A4;margin:0}
+  body{margin:0;font-family:Inter,system-ui,sans-serif;background:#e9e4dc;color:#1c1c1a}
+  .bar{max-width:210mm;margin:16px auto;display:flex;gap:10px;justify-content:center}
+  .bar button,.bar a{border:0;border-radius:999px;padding:10px 18px;font:600 14px Inter;cursor:pointer;background:#c8562e;color:#fff;text-decoration:none}
+  .bar a{background:#fff;color:#1c1c1a;border:1.5px solid #d8d1c6}
+  .sheet{width:210mm;min-height:297mm;margin:0 auto 24px;background:#fbf8f3;box-sizing:border-box;padding:22mm 18mm;text-align:center;display:flex;flex-direction:column;align-items:center}
+  .sheet img.logo{width:120mm;border-radius:10px}
+  h1{font-family:"Bricolage Grotesque";font-size:44px;line-height:1.05;margin:14mm 0 4mm}
+  .stars{font-size:46px;letter-spacing:6px;color:#f2b01e;margin:0 0 6mm}
+  p.lead{font-size:20px;color:#4a463f;max-width:150mm;margin:0 0 10mm}
+  #qr{background:#fff;padding:7mm;border-radius:8mm;box-shadow:0 2px 0 #e7e1d8}
+  #qr img,#qr canvas{display:block;width:80mm!important;height:80mm!important}
+  .hint{font-size:16px;color:#6d685f;margin-top:7mm}
+  .foot{margin-top:auto;padding-top:12mm;font-size:15px;color:#4a463f}
+  .foot b{color:#1c1c1a}
+  @media print{body{background:#fff}.bar{display:none}.sheet{margin:0}}
+</style>
+</head>
+<body>
+<div class="bar"><button onclick="window.print()">Natisni / shrani kot PDF</button><a href="./">← Na stran</a></div>
+<div class="sheet">
+  <img class="logo" src="lOGO.jpg" alt="ŠRD Straža – Tenis center Obrul">
+  <h1>Ti je bilo všeč pri nas?</h1>
+  <div class="stars">★★★★★</div>
+  <p class="lead">Oceni nas na Googlu – vzame pol minute in nam zelo pomaga.</p>
+  <div id="qr"></div>
+  <div class="hint">Skeniraj kodo s kamero telefona</div>
+  <div class="foot"><b>Rezervacije:</b> tenis-center-obrul.si · <b>Tel.:</b> 031 528 978</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>new QRCode(document.getElementById("qr"), { text: "https://g.page/r/CW-dQSYMbQtxEBM/review", width: 600, height: 600, colorDark: "#1c1c1a", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.M });</script>
+</body>
+</html>

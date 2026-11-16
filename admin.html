@@ -42,6 +42,15 @@
   .scroll{overflow-x:auto}
   .item{border-bottom:1px solid #eee7dc;padding:12px 0;display:flex;justify-content:space-between;gap:12px}
   .item:last-child{border:0}
+  .stcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:14px 0 6px}
+  .stcard{background:#f3eee6;border-radius:12px;padding:14px}
+  .stcard b{display:block;font-family:"Bricolage Grotesque";font-size:28px}
+  .stcard span{font-size:13px;color:#6d685f}
+  h3.st{font-size:15px;margin:22px 0 8px}
+  .sbar{display:grid;grid-template-columns:120px 1fr 90px;gap:10px;align-items:center;margin:5px 0;font-size:14px}
+  .sbar .tr{background:#f3eee6;border-radius:5px;height:16px;overflow:hidden}
+  .sbar .fl{background:#c8562e;height:100%;border-radius:5px}
+  .sbar .v{text-align:right;color:#6d685f}
 </style>
 </head>
 <body>
@@ -74,6 +83,7 @@
       <button class="tab" data-tab="tur">Turnirji in zaprti termini</button>
       <button class="tab" data-tab="nov">Novice in obvestila</button>
       <button class="tab" data-tab="pri">Prijave na turnirje</button>
+      <button class="tab" data-tab="sta">Statistika</button>
     </div>
 
     <div class="box" id="tab-rez">
@@ -145,6 +155,14 @@
         <div id="newsList" class="muted">Nalagam …</div>
       </div>
     </div>
+    <div id="tab-sta" style="display:none">
+      <div class="box">
+        <div class="top"><h2 style="margin:0">Statistika rezervacij</h2>
+          <select id="stRange" style="width:auto"><option value="30">Zadnjih 30 dni</option><option value="season" selected>Ta sezona</option><option value="year">To leto</option><option value="all">Vse</option></select></div>
+        <p class="muted" style="margin:6px 0 0;font-size:13px">Upoštevane so oddane rezervacije (tudi prihodnje); preklicane niso. Prihodek je ocena po 10 €/uro, brez reflektorjev.</p>
+        <div id="stBody" class="muted" style="margin-top:12px">Nalagam …</div>
+      </div>
+    </div>
     <div id="tab-pri" style="display:none">
       <div class="box">
         <div class="top" style="margin-bottom:8px"><h2 style="margin:0">Prijave na turnirje</h2><button class="ghost" id="sRefresh">Osveži</button></div>
@@ -176,8 +194,8 @@ $("bStart").value="420"; $("bEnd").value="1440";
 
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{
   document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("on",x===t));
-  ["rez","tur","nov","pri"].forEach(k=>$("tab-"+k).style.display = k===t.dataset.tab ? "block":"none");
-  if(t.dataset.tab==="tur") loadBlocks(); if(t.dataset.tab==="nov") loadNews(); if(t.dataset.tab==="rez") load(); if(t.dataset.tab==="pri") loadSignups();
+  ["rez","tur","nov","pri","sta"].forEach(k=>$("tab-"+k).style.display = k===t.dataset.tab ? "block":"none");
+  if(t.dataset.tab==="tur") loadBlocks(); if(t.dataset.tab==="nov") loadNews(); if(t.dataset.tab==="rez") load(); if(t.dataset.tab==="pri") loadSignups(); if(t.dataset.tab==="sta") loadStats();
 });
 
 async function show(){
@@ -335,6 +353,45 @@ async function loadSignups(){
   });
 }
 $("sRefresh").onclick = loadSignups;
+
+async function loadStats(){
+  const box=$("stBody"); box.textContent="Nalagam …";
+  const now=new Date(), r=$("stRange").value; let from=null;
+  if(r==="30"){ const d=new Date(now); d.setDate(d.getDate()-30); from=d; }
+  else if(r==="season"){ from=new Date(now.getMonth()<3 ? now.getFullYear()-1 : now.getFullYear(), 3, 1); }
+  else if(r==="year"){ from=new Date(now.getFullYear(),0,1); }
+  let q=sb.from("bookings").select("date,court,start_min,dur_min,name,phone").order("date");
+  if(from) q=q.gte("date", from.getFullYear()+"-"+pad(from.getMonth()+1)+"-"+pad(from.getDate()));
+  const { data, error } = await q.limit(10000);
+  if(error){ box.textContent="Napaka pri nalaganju."; console.log(error); return; }
+  box.innerHTML=""; box.className="";
+  if(!data.length){ box.className="muted"; box.textContent="V tem obdobju ni rezervacij."; return; }
+  const mins=data.reduce((s,b)=>s+b.dur_min,0);
+  const players=new Map();
+  data.forEach(b=>{ const k=(b.phone||"").replace(/\D/g,"")||b.name.toLowerCase(); const p=players.get(k)||{name:b.name,n:0,m:0}; p.name=b.name; p.n++; p.m+=b.dur_min; players.set(k,p); });
+  const fmtH=m=>(Math.round(m/6)/10).toLocaleString("sl-SI")+" h";
+  const cards=document.createElement("div"); cards.className="stcards";
+  [[data.length,"rezervacij"],[fmtH(mins),"zasedenih ur"],[(mins/6).toLocaleString("sl-SI",{maximumFractionDigits:0})+" €","ocenjen prihodek"],[players.size,"različnih igralcev"],[Math.round(mins/data.length)+" min","povprečen termin"]]
+    .forEach(([v,l])=>{ const c=document.createElement("div"); c.className="stcard"; c.innerHTML="<b></b><span></span>"; c.firstChild.textContent=v; c.lastChild.textContent=l; cards.appendChild(c); });
+  box.appendChild(cards);
+  function bars(title, rows, fmt){
+    const h=document.createElement("h3"); h.className="st"; h.textContent=title; box.appendChild(h);
+    const mx=Math.max(1,...rows.map(x=>x[1]));
+    rows.forEach(([lab,val])=>{ const d=document.createElement("div"); d.className="sbar"; d.innerHTML='<span></span><div class="tr"><div class="fl"></div></div><span class="v"></span>'; d.firstChild.textContent=lab; d.querySelector(".fl").style.width=(100*val/mx)+"%"; d.querySelector(".v").textContent=fmt(val); box.appendChild(d); });
+  }
+  const court=[1,2].map(c=>["Igrišče "+c, data.filter(b=>b.court===c).reduce((s,b)=>s+b.dur_min,0)]);
+  bars("Po igriščih (ure)", court, fmtH);
+  const order=[1,2,3,4,5,6,0], dm=new Array(7).fill(0);
+  data.forEach(b=>{ dm[new Date(b.date+"T12:00:00").getDay()]+=b.dur_min; });
+  bars("Po dnevih v tednu (ure)", order.map(i=>[DOW[i], dm[i]]), fmtH);
+  const hr=new Array(24).fill(0);
+  data.forEach(b=>{ for(let m=b.start_min;m<b.start_min+b.dur_min;m+=30) hr[Math.floor(m/60)]+=30; });
+  const hrows=[]; for(let i=7;i<24;i++) hrows.push([pad(i)+":00–"+(i===23?"24":pad(i+1))+":00", hr[i]]);
+  bars("Po urah (kdaj je najbolj zasedeno)", hrows, fmtH);
+  const top=[...players.values()].sort((a,b)=>b.m-a.m).slice(0,10);
+  bars("Najpogostejši igralci", top.map(p=>[p.name, p.m]), v=>{ const p=top.find(x=>x.m===v); return fmtH(v); });
+}
+$("stRange").onchange = loadStats;
 
 $("login").addEventListener("submit", async e=>{
   e.preventDefault(); $("lErr").textContent="";

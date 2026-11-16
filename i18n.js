@@ -113,7 +113,9 @@
     ["Rezervacije bodo na voljo 14 dni pred začetkom sezone.", "Bookings open 14 days before the season starts.", "Buchungen sind ab 14 Tage vor Saisonbeginn möglich."],
     ["Za informacije pokliči 031 528 978.", "For information call 031 528 978.", "Für Informationen ruf 031 528 978 an."],
     ["Igrišča so pozimi zaprta – rezervacije so mogoče od", "The courts are closed in winter – bookings are possible from", "Die Plätze sind im Winter geschlossen – Buchungen möglich ab"],
-    ["zimsko zaprtje", "winter closure", "Winterpause"], ["Zaprto", "Closed", "Geschlossen"]
+    ["zimsko zaprtje", "winter closure", "Winterpause"],
+    ["Oceni nas na Googlu", "Rate us on Google", "Bewerte uns auf Google"], ["Mnenje", "Review", "Bewertung"],
+    ["Piši na WhatsApp", "Message us on WhatsApp", "Schreib uns auf WhatsApp"], ["Pokliči 031 528 978", "Call 031 528 978", "Ruf 031 528 978 an"], ["Zaprto", "Closed", "Geschlossen"]
   ];
   const LANGS = { sl: -1, en: 1, de: 2 };
   const esc = s => s.replace(/[.*+?^(){}$|[\]\\]/g, "\\$&");
