@@ -146,7 +146,7 @@ function updateSummary() {
   const c = COURTS.find(x => x.id === pending.court);
   $("mWhen").textContent = prettyDate(pending.date) + " · " + hm(pending.start) + "–" + hm(pending.start + dur) + " · " + c.name;
   $("fPrice").textContent = "Cena: " + price(dur) + (weeks > 1 ? " na termin × " + weeks + " tednov" : "") +
-    (pending.start + dur > 17 * 60 ? " + reflektorji (1,5 €/h), če je temno" : "");
+    (pending.start + dur > 17 * 60 ? " + reflektorji (2 €/h), če je temno" : "");
 }
 
 function openBook(date, court, start) {

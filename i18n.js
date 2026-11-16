@@ -36,7 +36,7 @@
     ["Opomba (neobvezno)", "Note (optional)", "Anmerkung (optional)"], ["Zapri", "Close", "Schließen"],
     ["Potrdi rezervacijo", "Confirm booking", "Buchung bestätigen"], ["Prekliči rezervacijo", "Cancel booking", "Buchung stornieren"],
     ["Cena:", "Price:", "Preis:"], ["na termin ×", "per slot ×", "pro Termin ×"], ["tednov", "weeks", "Wochen"],
-    ["+ reflektorji (1,5 €/h), če je temno", "+ floodlights (€1.50/h) after dark", "+ Flutlicht (1,50 €/h) bei Dunkelheit"],
+    ["+ reflektorji (2 €/h), če je temno", "+ floodlights (€2/h) after dark", "+ Flutlicht (2 €/h) bei Dunkelheit"],
     ["Vpiši ime.", "Please enter your name.", "Bitte Namen eingeben."],
     ["Vpiši veljavno telefonsko številko.", "Please enter a valid phone number.", "Bitte eine gültige Telefonnummer eingeben."],
     ["Vpiši veljaven e-naslov ali pusti polje prazno.", "Enter a valid e-mail or leave it empty.", "Gültige E-Mail eingeben oder Feld leer lassen."],
