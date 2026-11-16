@@ -99,7 +99,10 @@
             <div><label for="mName">Ime in priimek</label><input id="mName" required maxlength="60"></div>
             <div><label for="mPhone">Telefon</label><input id="mPhone" maxlength="20"></div>
           </div>
-          <label for="mNote">Opomba</label><input id="mNote" maxlength="120">
+          <div class="grid2">
+            <div><label for="mEmail">E-pošta (neobvezno – stranka dobi potrditev in opomnik)</label><input id="mEmail" type="email" maxlength="120"></div>
+            <div><label for="mNote">Opomba</label><input id="mNote" maxlength="120"></div>
+          </div>
           <div class="err" id="mErr"></div><div class="ok" id="mOk"></div>
           <button type="submit">Dodaj rezervacijo</button>
         </form>
@@ -320,11 +323,13 @@ $("manForm").addEventListener("submit", async e=>{
   e.preventDefault(); $("mErr").textContent=""; $("mOk").textContent="";
   const s=Number($("mStart").value), d=Number($("mDur").value);
   if (s + d > 1440) { $("mErr").textContent="Termin mora končati do 24:00."; return; }
+  const em=$("mEmail").value.trim();
+  if (em && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { $("mErr").textContent="Neveljaven e-naslov."; return; }
   const { error } = await sb.rpc("admin_book", { p_date:$("mDate").value, p_court:Number($("mCourt").value), p_start_min:s, p_dur_min:d,
-    p_name:$("mName").value.trim(), p_phone:$("mPhone").value.trim(), p_note:$("mNote").value.trim()||null, p_email:null });
+    p_name:$("mName").value.trim(), p_phone:$("mPhone").value.trim(), p_note:$("mNote").value.trim()||null, p_email:$("mEmail").value.trim()||null });
   if (error) { $("mErr").textContent = /zaseden|zaprt/.test(error.message||"") ? error.message : "Vnos ni uspel."; console.log(error); return; }
-  $("mOk").textContent = "Dodano: " + niceDate($("mDate").value) + " " + hm(s) + "–" + hm(s+d) + ", igrišče " + $("mCourt").value + ".";
-  $("mName").value=""; $("mPhone").value=""; $("mNote").value="";
+  $("mOk").textContent = "Dodano: " + niceDate($("mDate").value) + " " + hm(s) + "–" + hm(s+d) + ", igrišče " + $("mCourt").value + "." + (em ? " Potrditev je poslana na " + em + "." : "");
+  $("mName").value=""; $("mPhone").value=""; $("mNote").value=""; $("mEmail").value="";
   load();
 });
 
