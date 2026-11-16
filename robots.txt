@@ -3,5 +3,6 @@ Allow: /
 Disallow: /admin.html
 Disallow: /preklic.html
 Disallow: /mnenje.html
+Disallow: /vnos.html
 
 Sitemap: https://tenis-center-obrul.si/sitemap.xml

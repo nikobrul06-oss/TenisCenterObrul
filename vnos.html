@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Rezervacije – Tenis center Obrul</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#fbf8f3;color:#1c1c1a;font-size:20px}
+.wrap{max-width:820px;margin:0 auto;padding:14px 12px 60px}
+h1{font-size:28px;margin:0}
+button{font:inherit;cursor:pointer;border:0;border-radius:14px}
+.head{display:flex;align-items:center;gap:12px}
+.head img{height:54px;border-radius:8px}
+.datebar{display:flex;align-items:center;gap:10px;margin:12px 0 6px;position:sticky;top:0;background:#fbf8f3;padding:8px 0;z-index:5}
+.arrow{width:68px;height:68px;font-size:32px;background:#1f3d2b;color:#fff;flex:none}
+.day{flex:1;text-align:center;font-weight:800;font-size:26px;line-height:1.15}
+.day small{display:block;font-size:18px;font-weight:500;color:#6d685f}
+.today{display:block;margin:4px auto 8px;background:#fff;border:2px solid #1f3d2b;color:#1f3d2b;padding:10px 24px;font-weight:700}
+table{width:100%;border-collapse:separate;border-spacing:6px;table-layout:fixed}
+th{font-size:21px;padding:4px}
+th.tc,td.t{width:70px}
+td{vertical-align:top;padding:0}
+td.t{font-weight:700;text-align:right;padding:14px 6px 0 0;font-size:19px;color:#4a463f}
+.free{width:100%;height:52px;background:#e3efe6;color:#1f3d2b;border:2px dashed #9cc3a8;font-size:18px;font-weight:600}
+.taken{width:100%;background:#c8562e;color:#fff;text-align:left;padding:8px 12px;font-size:19px;line-height:1.3;display:block}
+.taken b{display:block;font-size:20px}
+.taken small{display:block;font-size:16px;opacity:.95}
+.ev{width:100%;height:52px;background:#d8d1c6;color:#4a463f;font-size:15px;padding:6px 10px;border-radius:14px;display:flex;align-items:center;overflow:hidden}
+.past{width:100%;height:52px;border-radius:14px;background:#f0ebe3}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:16px;color:#4a463f;margin:4px 6px 0}
+.legend i{display:inline-block;width:18px;height:18px;border-radius:5px;vertical-align:-3px;margin-right:6px}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding:14px;overflow:auto;z-index:20}
+.ov.open{display:flex}
+.box{background:#fff;border-radius:20px;padding:22px;max-width:520px;width:100%;box-shadow:0 10px 40px rgba(0,0,0,.2)}
+.box h2{margin:0 0 6px;font-size:27px}
+.when{font-size:21px;font-weight:700;color:#c8562e;margin-bottom:6px;line-height:1.35}
+label{display:block;font-weight:700;margin:18px 0 8px}
+input{width:100%;font:inherit;padding:14px;border:2px solid #cfc7ba;border-radius:12px}
+input:focus{outline:3px solid #9cc3a8;border-color:#1f3d2b}
+.durs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.durs button{padding:16px 8px;background:#f3eee6;border:2px solid #e0d8cb;font-weight:600}
+.durs button.on{background:#1f3d2b;color:#fff;border-color:#1f3d2b}
+.big{display:block;width:100%;padding:18px;font-size:22px;font-weight:800;margin-top:18px}
+.green{background:#2d7a46;color:#fff}
+.grey{background:#ece6dc;color:#1c1c1a;margin-top:10px}
+.red{background:#b3261e;color:#fff}
+.err{color:#b3261e;font-weight:700;margin-top:12px;min-height:1px}
+.msg{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1f3d2b;color:#fff;padding:18px 26px;border-radius:16px;font-weight:800;font-size:21px;display:none;z-index:30;text-align:center;max-width:92vw}
+.tel{display:inline-block;margin-top:10px;font-size:22px;font-weight:700;color:#1f3d2b}
+.foot{text-align:center;margin-top:30px}
+.foot button{background:none;color:#8a8478;text-decoration:underline;font-size:15px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head"><img src="lOGO.jpg" alt=""><h1>Rezervacije igrišč</h1></div>
+
+  <form id="login" class="box" style="margin:24px auto;display:none">
+    <h2>Prijava</h2>
+    <p style="margin:0 0 12px;color:#4a463f">Prijava je potrebna samo prvič na tej napravi.</p>
+    <input id="lEmail" type="email" placeholder="E-pošta" autocomplete="username" required>
+    <input id="lPass" type="password" placeholder="Geslo" autocomplete="current-password" required style="margin-top:10px">
+    <div class="err" id="lErr"></div>
+    <button class="big green" type="submit">Prijava</button>
+  </form>
+
+  <div id="app" style="display:none">
+    <div class="datebar">
+      <button class="arrow" id="prev" aria-label="Prejšnji dan">◀</button>
+      <div class="day"><span id="dName"></span><small id="dDate"></small></div>
+      <button class="arrow" id="next" aria-label="Naslednji dan">▶</button>
+    </div>
+    <button class="today" id="toToday">Nazaj na danes</button>
+    <div class="legend"><span><i style="background:#e3efe6;border:2px dashed #9cc3a8"></i>prosto – klikni za vnos</span><span><i style="background:#c8562e"></i>rezervirano</span><span><i style="background:#d8d1c6"></i>turnir / zaprto</span></div>
+    <table id="grid"></table>
+    <div class="foot"><button id="logout">Odjava</button></div>
+  </div>
+</div>
+
+<div class="ov" id="ovNew"><div class="box">
+  <h2>Nova rezervacija</h2>
+  <div class="when" id="nWhen"></div>
+  <label>Koliko časa?</label>
+  <div class="durs" id="nDurs"></div>
+  <label for="nName">Ime in priimek</label>
+  <input id="nName" autocomplete="off" maxlength="60">
+  <label for="nPhone">Telefon</label>
+  <input id="nPhone" inputmode="tel" autocomplete="off" maxlength="20">
+  <div class="err" id="nErr"></div>
+  <button class="big green" id="nSave">✔ Shrani rezervacijo</button>
+  <button class="big grey" id="nBack">Nazaj</button>
+</div></div>
+
+<div class="ov" id="ovOld"><div class="box">
+  <h2 id="oName"></h2>
+  <div class="when" id="oWhen"></div>
+  <div id="oPhone"></div>
+  <div id="oNote" style="color:#6d685f;margin-top:8px"></div>
+  <div id="oStep1">
+    <button class="big grey" id="oBack" style="margin-top:20px">Nazaj</button>
+    <button class="big red" id="oDel">Izbriši rezervacijo</button>
+  </div>
+  <div id="oStep2" style="display:none">
+    <p style="font-weight:800;font-size:22px;margin:22px 0 0">Ali res želiš izbrisati to rezervacijo?</p>
+    <button class="big red" id="oYes">Da, izbriši</button>
+    <button class="big grey" id="oNo">Ne</button>
+  </div>
+</div></div>
+
+<div class="msg" id="msg"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js?v=3"></script>
+<script>
+const sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+const $ = id => document.getElementById(id);
+const pad = n => String(n).padStart(2, "0");
+const hm = m => (m === 1440 ? "24" : String(Math.floor(m / 60))) + ":" + pad(m % 60);
+const ymd = d => d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+const DOW = ["nedelja", "ponedeljek", "torek", "sreda", "četrtek", "petek", "sobota"];
+const DUR = { 30: "pol ure", 60: "1 uro", 90: "1 uro in pol", 120: "2 uri", 150: "2 uri in pol", 180: "3 ure" };
+const OPEN = 420, CLOSE = 1440;
+let cur = new Date(); cur.setHours(12, 0, 0, 0);
+let books = [], blocks = [], sel = null, dur = 60, delId = null;
+
+function msg(t) { const m = $("msg"); m.textContent = t; m.style.display = "block"; clearTimeout(msg.t); msg.t = setTimeout(() => m.style.display = "none", 3500); }
+function dateText(d) { return DOW[d.getDay()] + ", " + d.getDate() + ". " + (d.getMonth() + 1) + ". " + d.getFullYear(); }
+function dayName() {
+  const t = new Date(); t.setHours(12, 0, 0, 0);
+  const diff = Math.round((cur - t) / 864e5);
+  if (diff === 0) return "Danes";
+  if (diff === 1) return "Jutri";
+  if (diff === -1) return "Včeraj";
+  const n = DOW[cur.getDay()]; return n.charAt(0).toUpperCase() + n.slice(1);
+}
+function busy(c, m) {
+  return books.some(x => x.court === c && x.start_min <= m && x.start_min + x.dur_min > m) ||
+         blocks.some(x => (x.courts || []).includes(c) && x.start_min <= m && x.end_min > m);
+}
+
+async function show() {
+  const { data: { session } } = await sb.auth.getSession();
+  $("login").style.display = session ? "none" : "block";
+  $("app").style.display = session ? "block" : "none";
+  if (session) load();
+}
+
+async function load() {
+  const d = ymd(cur);
+  const [b, k] = await Promise.all([
+    sb.from("bookings").select("id,court,start_min,dur_min,name,phone,note").eq("date", d).order("start_min"),
+    sb.from("blocks").select("start_min,end_min,courts,title").eq("date", d)
+  ]);
+  if (b.error) { $("grid").innerHTML = "<tr><td>Napaka pri nalaganju. Preveri internet in poskusi znova.</td></tr>"; console.log(b.error); return; }
+  books = b.data || []; blocks = k.data || [];
+  render();
+}
+
+function render() {
+  $("dName").textContent = dayName(); $("dDate").textContent = dateText(cur);
+  const now = new Date(), isToday = ymd(cur) === ymd(now), pastDay = ymd(cur) < ymd(now), nowMin = now.getHours() * 60 + now.getMinutes();
+  $("toToday").style.display = isToday ? "none" : "block";
+  const g = $("grid"); g.innerHTML = "";
+  const h = document.createElement("tr"); h.innerHTML = '<th class="tc"></th><th>Igrišče 1</th><th>Igrišče 2</th>'; g.appendChild(h);
+  const skip = { 1: 0, 2: 0 };
+  for (let m = OPEN; m < CLOSE; m += 30) {
+    const tr = document.createElement("tr");
+    const t = document.createElement("td"); t.className = "t"; t.textContent = hm(m); tr.appendChild(t);
+    for (const c of [1, 2]) {
+      if (skip[c] > 0) { skip[c]--; continue; }
+      const td = document.createElement("td");
+      const bk = books.find(x => x.court === c && x.start_min <= m && x.start_min + x.dur_min > m);
+      const bl = blocks.find(x => (x.courts || []).includes(c) && x.start_min <= m && x.end_min > m);
+      if (bk) {
+        const rows = Math.max(1, Math.ceil((Math.min(bk.start_min + bk.dur_min, CLOSE) - m) / 30));
+        td.rowSpan = rows; skip[c] = rows - 1;
+        const btn = document.createElement("button"); btn.className = "taken"; btn.style.height = (rows * 58 - 6) + "px";
+        btn.innerHTML = "<b></b><small></small><small></small>";
+        btn.children[0].textContent = bk.name;
+        btn.children[1].textContent = hm(bk.start_min) + " – " + hm(bk.start_min + bk.dur_min);
+        btn.children[2].textContent = bk.phone && bk.phone !== "000000" ? "📞 " + bk.phone : "";
+        btn.onclick = () => openOld(bk);
+        td.appendChild(btn);
+      } else if (bl) {
+        const e = document.createElement("div"); e.className = "ev"; e.textContent = bl.title || "Zaprto"; td.appendChild(e);
+      } else if (pastDay || (isToday && m + 30 <= nowMin)) {
+        const e = document.createElement("div"); e.className = "past"; td.appendChild(e);
+      } else {
+        const btn = document.createElement("button"); btn.className = "free"; btn.textContent = "+ prosto";
+        btn.onclick = () => openNew(c, m); td.appendChild(btn);
+      }
+      tr.appendChild(td);
+    }
+    g.appendChild(tr);
+  }
+}
+
+function whenText() { return "Igrišče " + sel.c + "<br>" + dayName() + ", " + cur.getDate() + ". " + (cur.getMonth() + 1) + ".<br>od " + hm(sel.m) + " do " + hm(sel.m + dur); }
+function openNew(c, m) {
+  sel = { c, m };
+  let max = 0; while (max < 180 && m + max < CLOSE && !busy(c, m + max)) max += 30;
+  dur = max >= 60 ? 60 : 30;
+  const box = $("nDurs"); box.innerHTML = "";
+  for (let d = 30; d <= max; d += 30) {
+    const b = document.createElement("button"); b.type = "button"; b.textContent = DUR[d]; b.dataset.d = d;
+    b.onclick = () => { dur = d; [...box.children].forEach(x => x.classList.toggle("on", Number(x.dataset.d) === dur)); $("nWhen").innerHTML = whenText(); };
+    box.appendChild(b);
+  }
+  [...box.children].forEach(x => x.classList.toggle("on", Number(x.dataset.d) === dur));
+  $("nWhen").innerHTML = whenText();
+  $("nName").value = ""; $("nPhone").value = ""; $("nErr").textContent = "";
+  $("ovNew").classList.add("open"); setTimeout(() => $("nName").focus(), 80);
+}
+$("nBack").onclick = () => $("ovNew").classList.remove("open");
+$("nSave").onclick = async () => {
+  const name = $("nName").value.trim();
+  if (name.length < 2) { $("nErr").textContent = "Vpiši ime in priimek."; $("nName").focus(); return; }
+  const btn = $("nSave"); btn.disabled = true; btn.textContent = "Shranjujem …";
+  const { error } = await sb.rpc("admin_book", { p_date: ymd(cur), p_court: sel.c, p_start_min: sel.m, p_dur_min: dur,
+    p_name: name, p_phone: $("nPhone").value.trim(), p_note: null, p_email: null });
+  btn.disabled = false; btn.textContent = "✔ Shrani rezervacijo";
+  if (error) {
+    console.log(error);
+    $("nErr").textContent = /zaseden/i.test(error.message || "") ? "Ta termin je medtem že nekdo rezerviral. Izberi drug termin." : "Shranjevanje ni uspelo. Poskusi še enkrat.";
+    load(); return;
+  }
+  $("ovNew").classList.remove("open");
+  msg("✔ Shranjeno: " + name + ", " + hm(sel.m) + "–" + hm(sel.m + dur) + ", igrišče " + sel.c);
+  load();
+};
+
+function openOld(bk) {
+  delId = bk.id;
+  $("oName").textContent = bk.name;
+  $("oWhen").innerHTML = "Igrišče " + bk.court + "<br>" + dayName() + ", " + cur.getDate() + ". " + (cur.getMonth() + 1) + ".<br>od " + hm(bk.start_min) + " do " + hm(bk.start_min + bk.dur_min);
+  const p = $("oPhone"); p.innerHTML = "";
+  if (bk.phone && bk.phone !== "000000") { const a = document.createElement("a"); a.className = "tel"; a.href = "tel:" + bk.phone.replace(/[^0-9+]/g, ""); a.textContent = "📞 " + bk.phone; p.appendChild(a); }
+  $("oNote").textContent = bk.note && bk.note !== "vnos skrbnika" ? "Opomba: " + bk.note : "";
+  $("oStep1").style.display = "block"; $("oStep2").style.display = "none";
+  $("ovOld").classList.add("open");
+}
+$("oBack").onclick = () => $("ovOld").classList.remove("open");
+$("oDel").onclick = () => { $("oStep1").style.display = "none"; $("oStep2").style.display = "block"; };
+$("oNo").onclick = () => $("ovOld").classList.remove("open");
+$("oYes").onclick = async () => {
+  const { error } = await sb.from("bookings").delete().eq("id", delId);
+  $("ovOld").classList.remove("open");
+  if (error) { console.log(error); msg("Brisanje ni uspelo. Poskusi še enkrat."); } else msg("Rezervacija je izbrisana.");
+  load();
+};
+
+$("prev").onclick = () => { cur.setDate(cur.getDate() - 1); load(); };
+$("next").onclick = () => { cur.setDate(cur.getDate() + 1); load(); };
+$("toToday").onclick = () => { cur = new Date(); cur.setHours(12, 0, 0, 0); load(); };
+["ovNew", "ovOld"].forEach(id => $(id).addEventListener("click", e => { if (e.target.id === id) $(id).classList.remove("open"); }));
+
+$("login").addEventListener("submit", async e => {
+  e.preventDefault(); $("lErr").textContent = "";
+  const { error } = await sb.auth.signInWithPassword({ email: $("lEmail").value.trim(), password: $("lPass").value });
+  if (error) $("lErr").textContent = "Napačna e-pošta ali geslo."; else show();
+});
+$("logout").onclick = async () => { await sb.auth.signOut(); show(); };
+
+setInterval(() => { if (!document.querySelector(".ov.open") && $("app").style.display === "block") load(); }, 30000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden && $("app").style.display === "block") load(); });
+show();
+</script>
+</body>
+</html>
