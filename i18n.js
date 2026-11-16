@@ -115,11 +115,11 @@
     ["Igrišča so pozimi zaprta – rezervacije so mogoče od", "The courts are closed in winter – bookings are possible from", "Die Plätze sind im Winter geschlossen – Buchungen möglich ab"],
     ["zimsko zaprtje", "winter closure", "Winterpause"],
     ["Oceni nas na Googlu", "Rate us on Google", "Bewerte uns auf Google"],
-    ["O nas", "About us", "Über uns"], ["Tenis v Oplotnici – blizu Slovenske Bistrice", "Tennis in Oplotnica – near Slovenska Bistrica", "Tennis in Oplotnica – nahe Slovenska Bistrica"],
+    ["O nas", "About us", "Über uns"], ["Tenis v Oplotnici – blizu Slovenske Bistrice in Konjic", "Tennis in Oplotnica – near Slovenska Bistrica and Slovenske Konjice", "Tennis in Oplotnica – nahe Slovenska Bistrica und Slovenske Konjice"],
     ["Tenis center Obrul upravlja Športno-rekreacijsko društvo Straža (ŠRD Straža). Igrišči sta v Straži pri Oplotnici, v naravnem okolju in blizu Slovenske Bistrice, Zreč in Slovenskih Konjic. Igrišča lahko najameš za rekreacijo, trening ali tekmo s prijatelji – brez članstva, vsak dan od 7. do 24. ure.",
      "Tenis Center Obrul is run by the Straža Sports and Recreation Club (ŠRD Straža). The courts are in Straža pri Oplotnici, surrounded by nature and close to Slovenska Bistrica, Zreče and Slovenske Konjice. Rent a court for fun, training or a match with friends – no membership needed, every day from 7:00 to 24:00.",
      "Das Tenis Center Obrul wird vom Sport- und Freizeitverein Straža (ŠRD Straža) betrieben. Die Plätze liegen in Straža pri Oplotnici, mitten in der Natur und nahe Slovenska Bistrica, Zreče und Slovenske Konjice. Miete einen Platz für Freizeit, Training oder ein Match mit Freunden – ohne Mitgliedschaft, täglich von 7 bis 24 Uhr."],
-    ["ŠRD Straža – Tenis center Obrul | Tenis Oplotnica in Slovenska Bistrica", "ŠRD Straža – Tenis Center Obrul | Tennis Oplotnica & Slovenska Bistrica", "ŠRD Straža – Tenis Center Obrul | Tennis Oplotnica & Slovenska Bistrica"], ["Mnenje", "Review", "Bewertung"],
+    ["ŠRD Straža – Tenis center Obrul | Tenis Oplotnica, Slovenska Bistrica, Konjice", "ŠRD Straža – Tenis Center Obrul | Tennis Oplotnica, Slovenska Bistrica, Konjice", "ŠRD Straža – Tenis Center Obrul | Tennis Oplotnica, Slovenska Bistrica, Konjice"], ["Mnenje", "Review", "Bewertung"],
     ["Piši na WhatsApp", "Message us on WhatsApp", "Schreib uns auf WhatsApp"], ["Pokliči 031 528 978", "Call 031 528 978", "Ruf 031 528 978 an"], ["Zaprto", "Closed", "Geschlossen"]
   ];
   const LANGS = { sl: -1, en: 1, de: 2 };
