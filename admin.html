@@ -93,6 +93,7 @@
       <div class="err" id="wErr"></div><div class="ok" id="wOk"></div>
       <button type="button" id="wBtn">Zapri igrišče</button>
       <div id="wList" style="margin-top:12px"></div>
+      <div id="wOpen" style="margin-top:14px"></div>
     </div>
     <div class="tabs">
       <button class="tab on" data-tab="rez">Rezervacije</button>
@@ -243,7 +244,7 @@ async function show(){
   $("loginBox").style.display = session ? "none" : "block";
   $("app").style.display = session ? "block" : "none";
   $("logout").style.display = session ? "inline-block" : "none";
-  if(session){ load(); loadSeason(); }
+  if(session){ load(); loadSeason(); loadWet(); }
 }
 
 async function loadSeason(){
@@ -397,6 +398,29 @@ async function loadSignups(){
 $("sRefresh").onclick = loadSignups;
 
 // ---- mokro igrišče ----
+async function loadWet(){
+  const box=$("wOpen"); if(!box) return;
+  const { data, error } = await sb.from("blocks").select("*").eq("kind","vzdrzevanje").gte("date", today()).order("date").order("start_min");
+  box.innerHTML="";
+  if(error||!data||!data.length) return;
+  box.appendChild(Object.assign(document.createElement("b"),{textContent:"Trenutno zaprto:"}));
+  data.forEach(b=>{
+    const d=document.createElement("div"); d.className="item";
+    const l=document.createElement("div"); l.textContent=niceDate(b.date)+" · "+hm(b.start_min)+"–"+hm(b.end_min)+" · igrišče "+b.courts.join(" in ")+(b.title?" · "+b.title:"");
+    d.appendChild(l);
+    const x=document.createElement("button"); x.type="button"; x.className="ghost"; x.textContent="Odpri igrišče"; x.style.padding="6px 14px";
+    let armed=false;
+    x.onclick=async()=>{
+      if(!armed){ armed=true; x.textContent="Potrdi odprtje"; setTimeout(()=>{armed=false;x.textContent="Odpri igrišče";},3000); return; }
+      x.disabled=true;
+      const { error:e } = await sb.from("blocks").delete().eq("id",b.id);
+      if(e){ x.disabled=false; x.textContent="Napaka – poskusi znova"; console.log(e); return; }
+      $("wOk").textContent="Igrišče "+b.courts.join(" in ")+" je spet odprto za rezervacije ("+niceDate(b.date)+", "+hm(b.start_min)+"–"+hm(b.end_min)+"). Preklicane rezervacije se ne vrnejo same.";
+      $("wList").innerHTML=""; loadWet(); load();
+    };
+    d.appendChild(x); box.appendChild(d);
+  });
+}
 (function(){
   for (let m=420; m<=1440; m+=30) {
     if (m<1440) { const o=document.createElement("option"); o.value=m; o.textContent=hm(m); $("wFrom").appendChild(o); }
@@ -415,6 +439,7 @@ $("sRefresh").onclick = loadSignups;
     const { data, error } = await sb.rpc("admin_close_courts",{ p_date:$("wDate").value, p_start_min:s, p_end_min:e, p_courts:courts, p_title:$("wTitle").value.trim() });
     $("wBtn").disabled=false;
     if(error){ $("wErr").textContent="Zapiranje ni uspelo."; console.log(error); return; }
+    loadWet();
     $("wOk").textContent="Igrišče "+courts.join(" in ")+" je zaprto "+niceDate($("wDate").value)+" od "+hm(s)+" do "+hm(e)+".";
     const box=$("wList"); box.innerHTML="";
     const list=data||[];
