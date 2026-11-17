@@ -149,8 +149,8 @@
   ];
   const LANGS = { sl: -1, en: 1, de: 2 };
   const esc = s => s.replace(/[.*+?^(){}$|[\]\\]/g, "\\$&");
-  const rules = D.slice().sort((a, b) => b[0].length - a[0].length)
-    .map(r => ({ re: new RegExp("(?<![\\p{L}])" + esc(r[0]) + "(?![\\p{L}])", "gu"), en: r[1], de: r[2] }));
+  const MAP = new Map(D.map(r => [r[0], { en: r[1], de: r[2] }]));
+  const BIG = new RegExp("(?<![\\p{L}])(" + D.map(r => r[0]).sort((a, b) => b.length - a.length).map(esc).join("|") + ")(?![\\p{L}])", "gu");
 
   let lang = "sl";
   try { lang = new URLSearchParams(location.search).get("lang") || localStorage.getItem("obrul_lang") || "sl"; } catch (e) {}
@@ -160,9 +160,8 @@
   const ATTRS = ["placeholder", "title", "alt", "aria-label"];
   function tr(s) {
     if (lang === "sl" || !s || !/\p{L}/u.test(s)) return s;
-    let out = s;
-    for (const r of rules) { r.re.lastIndex = 0; if (r.re.test(out)) { r.re.lastIndex = 0; out = out.replace(r.re, () => r[lang]); } }
-    return out;
+    BIG.lastIndex = 0;
+    return s.replace(BIG, m => { const t = MAP.get(m); return t ? t[lang] : m; });
   }
   function doText(n) {
     if (last.get(n) === n.nodeValue) return;
