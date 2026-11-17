@@ -120,7 +120,7 @@ function renderGrid() {
   }
   shown.forEach((p, i) => {
     const b = document.createElement("button"); b.className = "item"; b.type = "button";
-    const im = document.createElement("img"); im.src = p.src; im.alt = p.naslov || ""; im.loading = "lazy";
+    const im = document.createElement("img"); im.src = p.src; im.alt = p.alt || p.naslov || ""; im.loading = "lazy";
     b.appendChild(im);
     if (p.naslov) { const s = document.createElement("span"); s.setAttribute("data-noi18n",""); s.textContent = p.naslov; b.appendChild(s); }
     b.onclick = () => openLb(i);
@@ -128,7 +128,7 @@ function renderGrid() {
   });
 }
 
-function openLb(i) { idx = (i + shown.length) % shown.length; const p = shown[idx]; $("lbImg").src = p.src; $("lbImg").alt = p.naslov || ""; $("lbCap").textContent = p.naslov || ""; $("lb").classList.add("open"); }
+function openLb(i) { idx = (i + shown.length) % shown.length; const p = shown[idx]; $("lbImg").src = p.src; $("lbImg").alt = p.alt || p.naslov || ""; $("lbCap").textContent = p.naslov || ""; $("lb").classList.add("open"); }
 function closeLb() { $("lb").classList.remove("open"); }
 $("lbX").onclick = closeLb; $("lbP").onclick = () => openLb(idx - 1); $("lbN").onclick = () => openLb(idx + 1);
 $("lb").addEventListener("click", e => { if (e.target.id === "lb") closeLb(); });
