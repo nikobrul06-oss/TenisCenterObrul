@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Tenis turnirji v Tenis centru Obrul (ŠRD Straža, Oplotnica): prijava na turnirje, koledar turnirjev in pretekli turnirji.">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="canonical" href="https://tenis-center-obrul.si/turnirji.html">
+<title>Turnirji — Tenis center Obrul</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--clay:#c8562e;--green:#1f3d2b;--green-2:#2d5a3f;--line:#e7e1d8;--bg:#fbf8f3;--ink:#1c1c1a;--muted:#6d685f}
+  *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+  h1,h2,h3{font-family:"Bricolage Grotesque",Inter,sans-serif;line-height:1.15;margin:0}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+  header.top{position:sticky;top:0;z-index:20;background:rgba(251,248,243,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  header.top .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{display:flex;align-items:center;gap:10px;font-family:"Bricolage Grotesque";font-weight:800;font-size:20px;text-decoration:none;color:inherit}
+  nav{display:flex;align-items:center}
+  nav a{text-decoration:none;font-weight:500;color:var(--muted);margin-left:22px;font-size:15px}
+  nav a:hover,nav a.on{color:var(--ink)}
+  .btn{display:inline-flex;border-radius:999px;padding:9px 18px;font:600 15px Inter;text-decoration:none;background:var(--clay);color:#fff!important;border:0;cursor:pointer}
+  .btn-white{background:#fff!important;color:var(--ink)!important;border:1.5px solid var(--line)}
+  .lang-sel{margin-left:18px;border:1.5px solid var(--line);border-radius:999px;background:#fff;font:600 13px Inter;padding:7px 8px;color:var(--ink);cursor:pointer}
+  @media(max-width:960px){nav a:not(.btn):not(.on){display:none}}
+  @media(max-width:520px){nav .btn{padding:8px 12px!important;margin-left:6px!important;font-size:14px!important}.lang-sel{margin-left:6px;padding:6px 4px}}
+  @media(max-width:400px){.logo > span{display:none}}
+  .head{padding:56px 0 18px}
+  .eyebrow{font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--clay);margin-bottom:10px}
+  .head h1{font-size:clamp(32px,5vw,52px)}
+  .cols{display:grid;grid-template-columns:1.3fr 1fr;gap:28px;padding-bottom:72px}
+  @media(max-width:860px){.cols{grid-template-columns:1fr}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:14px}
+  .card.imp{border-color:#f0b48f;background:#fff6ef}
+  .date{font-size:13px;color:var(--muted);margin-bottom:6px}
+  .card h3{font-size:20px;margin-bottom:6px}
+  .card p{margin:0;white-space:pre-line;color:#3b3833}
+  .ev{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line)}
+  .ev:last-child{border:0}
+  .cal{flex:none;width:52px;text-align:center;background:var(--green);color:#fff;border-radius:10px;padding:6px 0}
+  .cal b{display:block;font-family:"Bricolage Grotesque";font-size:20px;line-height:1}
+  .cal small{font-size:11px;text-transform:uppercase}
+  .ev .btn{margin-top:8px;padding:7px 14px;font-size:14px}
+  .muted{color:var(--muted)}
+  footer{background:var(--green);color:#a9b8ab;padding:28px 0;font-size:14px}
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+  footer a{color:#fff}
+  .overlay{position:fixed;inset:0;background:rgba(20,24,20,.55);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+  .overlay.open{display:flex}
+  .modal{background:#fff;border-radius:20px;max-width:460px;width:100%;padding:26px;max-height:92vh;overflow:auto}
+  .modal h3{font-size:24px;margin-bottom:4px}
+  .field{margin-bottom:12px}
+  .field label{display:block;font-size:13px;font-weight:600;margin-bottom:5px}
+  .field input,.field textarea{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font:15px Inter}
+  .field textarea{min-height:70px;resize:vertical}
+  .err{color:#b3261e;font-size:14px;min-height:20px}
+  .okmsg{color:var(--green-2);font-weight:600}
+  .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
+  .tsec{margin-bottom:34px}
+  .calhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .calhead b{font-family:"Bricolage Grotesque";font-size:20px}
+  .calhead button{background:#fff;border:1.5px solid var(--line);border-radius:10px;width:42px;height:38px;font-size:18px;cursor:pointer}
+  .calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+  .calgrid .dow{text-align:center;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase}
+  .calgrid .cd{aspect-ratio:1/1;border:0;border-radius:10px;background:#f3eee6;font:600 15px Inter,sans-serif;color:#1c1c1a;display:flex;align-items:center;justify-content:center}
+  .calgrid .cd.empty{background:transparent}
+  .calgrid .cd.tur{background:var(--clay,#c8562e);color:#fff;cursor:pointer}
+  .calgrid .cd.oth{background:#d8d1c6;cursor:pointer}
+  .calgrid .cd.now{outline:2px solid #1f3d2b}
+  .calleg{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:12px}
+  .calleg i{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:6px}
+  #calInfo{margin-top:12px;font-size:15px}
+  .past{display:grid;gap:16px}
+  .past .pc{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .past .pc img{width:100%;max-height:420px;object-fit:cover;display:block;cursor:zoom-in}
+  .past .pc .pb{padding:16px 18px}
+  .past .pc .pb h3{font-size:20px;margin:2px 0 6px}
+  .tgrid{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:start}
+  @media(max-width:860px){.tgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="./">
+      <img src="logo.png" alt="ŠRD Straža" style="height:46px;width:auto;border-radius:8px">
+      <span style="line-height:1.05">ŠRD Straža<small style="display:block;font:500 12px Inter;color:var(--muted)">Tenis center Obrul</small></span>
+    </a>
+    <nav>
+      <a href="./#igrisca">Igrišča</a>
+      <a href="novice.html">Novice</a>
+      <a href="turnirji.html" class="on">Turnirji</a>
+      <a href="./#cenik">Cenik</a>
+      <a href="./#kontakt">Kontakt</a>
+      <select class="lang-sel" aria-label="Jezik / Language" data-noi18n><option value="sl">SL</option><option value="en">EN</option><option value="de">DE</option></select>
+      <a class="btn btn-white" href="galerija.html" style="margin-left:10px">Galerija</a>
+      <a class="btn" href="./#rezervacija" style="margin-left:10px">Rezerviraj</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap head">
+  <div class="eyebrow">Turnirji</div>
+  <h1>Turnirji v Tenis centru Obrul</h1>
+</div>
+
+<div class="wrap tgrid">
+  <div>
+    <div class="tsec">
+      <h2 style="font-size:22px;margin-bottom:14px">Prihajajoči turnirji in prijava</h2>
+      <div class="card" id="events"><p class="muted">Nalagam …</p></div>
+      <p class="muted" style="font-size:14px">Ob turnirjih igrišča niso na voljo za rezervacijo.</p>
+    </div>
+    <div class="tsec">
+      <h2 style="font-size:22px;margin-bottom:14px">Pretekli turnirji</h2>
+      <div class="past" id="past"><p class="muted">Nalagam …</p></div>
+    </div>
+  </div>
+  <div class="tsec">
+    <h2 style="font-size:22px;margin-bottom:14px">Koledar turnirjev</h2>
+    <div class="card">
+      <div class="calhead"><button type="button" id="calPrev" aria-label="Prejšnji mesec">‹</button><b id="calTitle"></b><button type="button" id="calNext" aria-label="Naslednji mesec">›</button></div>
+      <div class="calgrid" id="cal"></div>
+      <div class="calleg"><span><i style="background:#c8562e"></i>turnir</span><span><i style="background:#d8d1c6"></i>drug dogodek / zaprto</span></div>
+      <div id="calInfo" class="muted">Klikni obarvan dan za podrobnosti.</div>
+    </div>
+  </div>
+</div>
+
+<footer><div class="wrap"><span>© 2026 ŠRD Straža · Tenis center Obrul · 031 528 978</span><a href="https://www.facebook.com/share/1ECnXx2Gk2/" target="_blank" rel="noopener">Facebook</a></div></footer>
+
+<div class="overlay" id="overlay" role="dialog" aria-modal="true">
+  <form class="modal" id="form">
+    <h3>Prijava na turnir</h3>
+    <div class="muted" id="sTitle" style="margin-bottom:16px" data-noi18n></div>
+    <div id="sFields">
+      <div class="field"><label for="sName">Ime in priimek</label><input id="sName" required maxlength="60" autocomplete="name"></div>
+      <div class="field"><label for="sPhone">Telefon</label><input id="sPhone" required maxlength="20" autocomplete="tel" inputmode="tel"></div>
+      <div class="field"><label for="sEmail">E-pošta (neobvezno – za potrditev)</label><input id="sEmail" type="email" maxlength="80" autocomplete="email"></div>
+      <div class="field"><label for="sPartner">Soigralec / partner (za dvojice)</label><input id="sPartner" maxlength="60"></div>
+      <div class="field"><label for="sNote">Opomba (neobvezno)</label><textarea id="sNote" maxlength="300"></textarea></div>
+    </div>
+    <div class="err" id="sErr"></div>
+    <div class="actions">
+      <button type="button" class="btn btn-white" id="sClose">Zapri</button>
+      <button type="submit" class="btn" id="sSubmit">Pošlji prijavo</button>
+    </div>
+  </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js?v=3"></script>
+<script>
+const sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+const $ = id => document.getElementById(id);
+const pad = n => String(n).padStart(2,"0");
+const hm = m => (m===1440?"24":pad(Math.floor(m/60)))+":"+pad(m%60);
+const MON = ["jan","feb","mar","apr","maj","jun","jul","avg","sep","okt","nov","dec"];
+const KIND = {turnir:"Turnir",trening:"Trening",vzdrzevanje:"Vzdrževanje igrišča",drugo:"Dogodek"};
+const el = (tag, cls, txt) => { const e=document.createElement(tag); if(cls) e.className=cls; if(txt!=null) e.textContent=txt; return e; };
+const today = () => { const d=new Date(); return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); };
+let current = null;
+
+function openSignup(g) {
+  current = g;
+  const d = new Date(g.from+"T12:00:00");
+  $("sTitle").textContent = g.title + " · " + d.getDate() + ". " + (d.getMonth()+1) + ". " + d.getFullYear();
+  $("sFields").style.display = "block"; $("sSubmit").style.display = ""; $("sErr").textContent = "";
+  try { const s = JSON.parse(localStorage.getItem("obrul_contact") || "{}"); if (s.name) $("sName").value = s.name; if (s.phone) $("sPhone").value = s.phone; if (s.email) $("sEmail").value = s.email; } catch (e) {}
+  $("overlay").classList.add("open"); setTimeout(() => $("sName").focus(), 50);
+}
+function closeSignup(){ $("overlay").classList.remove("open"); }
+$("sClose").onclick = closeSignup;
+$("overlay").addEventListener("click", e => { if (e.target.id === "overlay") closeSignup(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeSignup(); });
+
+$("form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const name=$("sName").value.trim(), phone=$("sPhone").value.trim(), email=$("sEmail").value.trim();
+  if (name.length < 2) { $("sErr").textContent = "Vpiši ime."; return; }
+  if (!/^[+0-9 ()\/-]{6,20}$/.test(phone)) { $("sErr").textContent = "Vpiši veljavno telefonsko številko."; return; }
+  if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { $("sErr").textContent = "Vpiši veljaven e-naslov ali pusti polje prazno."; return; }
+  $("sSubmit").disabled = true;
+  const { error } = await sb.rpc("tournament_signup", { p_title: current.title, p_date: current.from, p_name: name, p_phone: phone,
+    p_email: email || null, p_partner: $("sPartner").value.trim() || null, p_note: $("sNote").value.trim() || null });
+  $("sSubmit").disabled = false;
+  if (error) { const m = error.message || ""; $("sErr").textContent = /že oddana|ne obstaja/.test(m) ? m : "Prijava ni uspela. Poskusi znova ali pokliči 031 528 978."; return; }
+  try { localStorage.setItem("obrul_contact", JSON.stringify({ name, phone, email })); } catch (e) {}
+  $("sFields").style.display = "none"; $("sSubmit").style.display = "none";
+  $("sErr").innerHTML = ""; const ok = el("p", "okmsg", "Prijava je oddana! Ko jo pregledamo, vas obvestimo."); $("sErr").appendChild(ok);
+  $("sPartner").value = ""; $("sNote").value = "";
+});
+
+const MONF = ["januar","februar","marec","april","maj","junij","julij","avgust","september","oktober","november","december"];
+const DOWS = ["pon","tor","sre","čet","pet","sob","ned"];
+let allBlocks = [], calM = new Date(); calM.setDate(1);
+function groupBlocks(list) {
+  const groups = [];
+  list.forEach(b => {
+    const g = groups.find(x => x.title === b.title && x.kind === b.kind && (new Date(b.date) - new Date(x.to)) <= 864e5 && b.date >= x.to);
+    if (g) g.to = b.date; else groups.push({ title:b.title, kind:b.kind, from:b.date, to:b.date, s:b.start_min, e:b.end_min, courts:b.courts });
+  });
+  return groups;
+}
+function fmtD(s) { const d = new Date(s+"T12:00:00"); return d.getDate() + ". " + (d.getMonth()+1) + ". " + d.getFullYear(); }
+function renderCal() {
+  const box = $("cal"); box.innerHTML = "";
+  const y = calM.getFullYear(), m = calM.getMonth();
+  $("calTitle").textContent = MONF[m] + " " + y;
+  DOWS.forEach(d => box.appendChild(el("div","dow",d)));
+  const first = (new Date(y,m,1).getDay()+6)%7;
+  for (let i=0;i<first;i++) box.appendChild(el("div","cd empty"));
+  const days = new Date(y,m+1,0).getDate();
+  for (let d=1; d<=days; d++) {
+    const ds = y+"-"+pad(m+1)+"-"+pad(d);
+    const evs = allBlocks.filter(b => b.date === ds);
+    const c = el("button", "cd" + (evs.some(x=>x.kind==="turnir") ? " tur" : evs.length ? " oth" : "") + (ds===today() ? " now" : ""), d);
+    c.type = "button";
+    if (evs.length) c.onclick = () => {
+      const info = $("calInfo"); info.innerHTML = ""; info.className = "";
+      info.appendChild(el("b", null, fmtD(ds)));
+      evs.forEach(x => { const p = el("div", null, ""); const tt = el("span", null, x.title); tt.setAttribute("data-noi18n",""); p.appendChild(tt); p.appendChild(document.createTextNode(" · " + hm(x.start_min) + "–" + hm(x.end_min) + " · igrišče " + x.courts.join(" & "))); info.appendChild(p); });
+    }; else c.disabled = true;
+    box.appendChild(c);
+  }
+}
+$("calPrev").onclick = () => { calM.setMonth(calM.getMonth()-1); renderCal(); };
+$("calNext").onclick = () => { calM.setMonth(calM.getMonth()+1); renderCal(); };
+
+(async () => {
+  const from = (new Date().getFullYear()-2) + "-01-01";
+  const [{ data: bl }, pj] = await Promise.all([
+    sb.from("blocks").select("*").gte("date", from).order("date").order("start_min").limit(2000),
+    fetch("turnirji.json?v=" + Date.now()).then(r => r.ok ? r.json() : []).catch(() => [])
+  ]);
+  allBlocks = bl || [];
+  renderCal();
+  const td = today();
+  const up = groupBlocks(allBlocks.filter(b => b.kind === "turnir" && b.date >= td));
+  const eb = $("events"); eb.innerHTML = "";
+  if (!up.length) eb.appendChild(el("p","muted","Trenutno ni napovedanih turnirjev. Spremljaj nas na Facebooku."));
+  up.forEach(g => {
+    const r = el("div","ev"); const d = new Date(g.from+"T12:00:00");
+    const cal = el("div","cal"); cal.appendChild(el("b",null,d.getDate())); cal.appendChild(el("small",null,MON[d.getMonth()])); r.appendChild(cal);
+    const tx = el("div"); const tb = el("b",null,g.title); tb.setAttribute("data-noi18n",""); tx.appendChild(tb);
+    const to = new Date(g.to+"T12:00:00");
+    tx.appendChild(el("div","muted", (g.from!==g.to ? "do " + to.getDate() + ". " + (to.getMonth()+1) + ". · " : "") + hm(g.s) + "–" + hm(g.e) + " · igrišče " + g.courts.join(" & ")));
+    const bt = el("button","btn","Prijava"); bt.type = "button"; bt.onclick = () => openSignup(g); tx.appendChild(bt);
+    r.appendChild(tx); eb.appendChild(r);
+  });
+  const past = [];
+  (Array.isArray(pj) ? pj : []).forEach(p => past.push({ title:p.naslov, date:p.datum, text:p.opis, imgs:p.slike||[] }));
+  groupBlocks(allBlocks.filter(b => b.kind === "turnir" && b.date < td)).forEach(g => { if (!past.some(p => p.date === g.from)) past.push({ title:g.title, date:g.from, text:"", imgs:[] }); });
+  past.sort((a,b) => b.date.localeCompare(a.date));
+  const pb = $("past"); pb.innerHTML = "";
+  if (!past.length) pb.appendChild(el("p","muted","Še ni preteklih turnirjev."));
+  past.forEach(p => {
+    const c = el("div","pc");
+    p.imgs.forEach(src => { const im = document.createElement("img"); im.src = src; im.alt = p.title; im.loading = "lazy"; im.onclick = () => window.open(src, "_blank"); c.appendChild(im); });
+    const b = el("div","pb"); b.appendChild(el("div","muted",fmtD(p.date)));
+    const h3 = el("h3",null,p.title); b.appendChild(h3);
+    if (p.text) b.appendChild(el("p",null,p.text));
+    c.appendChild(b); pb.appendChild(c);
+  });
+})();
+</script>
+<script src="i18n.js?v=7"></script>
+</body>
+</html>

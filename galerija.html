@@ -64,6 +64,7 @@
     <nav>
       <a href="./#igrisca">Igrišča</a>
             <a href="novice.html">Novice</a>
+      <a href="turnirji.html">Turnirji</a>
       <a href="./#cenik">Cenik</a>
       <a href="./#kontakt">Kontakt</a>
       <select class="lang-sel" aria-label="Jezik / Language" data-noi18n><option value="sl">SL</option><option value="en">EN</option><option value="de">DE</option></select>
@@ -139,6 +140,6 @@ document.addEventListener("keydown", e => {
 renderChips(); renderGrid();
 fetch("galerija.json?v=" + Date.now()).then(r => r.ok ? r.json() : []).then(d => { photos = Array.isArray(d) ? d : []; renderGrid(); }).catch(() => {});
 </script>
-<script src="i18n.js?v=1"></script>
+<script src="i18n.js?v=7"></script>
 </body>
 </html>

@@ -3,4 +3,5 @@
   <url><loc>https://tenis-center-obrul.si/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
   <url><loc>https://tenis-center-obrul.si/novice.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://tenis-center-obrul.si/galerija.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://tenis-center-obrul.si/turnirji.html</loc></url>
 </urlset>
