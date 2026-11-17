@@ -78,12 +78,29 @@
       <div class="err" id="sErr"></div><div class="ok" id="sOk"></div>
       <button type="button" id="sSave">Shrani</button>
     </div>
+    <div class="box" id="wetBox">
+      <h2>🌧 Mokro ali neuporabno igrišče</h2>
+      <p class="muted" style="margin-top:0">Hitro zapri igrišče (npr. po dežju). Rezervacije v tem času se prekličejo, spodaj dobiš seznam ljudi, ki jih pokličeš.</p>
+      <div class="grid3">
+        <div><label for="wDate">Datum</label><input id="wDate" type="date"></div>
+        <div><label for="wFrom">Od ure</label><select id="wFrom"></select></div>
+        <div><label for="wTo">Do ure</label><select id="wTo"></select></div>
+      </div>
+      <div class="grid2">
+        <div><label>Igrišča</label><div class="checks"><label><input type="checkbox" id="wC1" checked> Igrišče 1</label><label><input type="checkbox" id="wC2" checked> Igrišče 2</label></div></div>
+        <div><label for="wTitle">Napis na strani</label><input id="wTitle" value="Mokro igrišče" maxlength="80"></div>
+      </div>
+      <div class="err" id="wErr"></div><div class="ok" id="wOk"></div>
+      <button type="button" id="wBtn">Zapri igrišče</button>
+      <div id="wList" style="margin-top:12px"></div>
+    </div>
     <div class="tabs">
       <button class="tab on" data-tab="rez">Rezervacije</button>
       <button class="tab" data-tab="tur">Turnirji in zaprti termini</button>
       <button class="tab" data-tab="nov">Novice in obvestila</button>
       <button class="tab" data-tab="pri">Prijave na turnirje</button>
       <button class="tab" data-tab="sta">Statistika</button>
+      <button class="tab" data-tab="kar">Kartice</button>
     </div>
 
     <div class="box" id="tab-rez">
@@ -166,6 +183,26 @@
         <div id="stBody" class="muted" style="margin-top:12px">Nalagam …</div>
       </div>
     </div>
+    <div id="tab-kar" style="display:none">
+      <div class="box">
+        <h2>Nova kartica za ure</h2>
+        <p class="muted" style="margin-top:0">Stranka kupi kartico v lokalu. Tu jo ustvariš in ji poveš ali napišeš številko kartice. Pri rezervaciji na strani vpiše številko, ure se odštejejo same. Ob preklicu se ure vrnejo.</p>
+        <form id="cardForm">
+          <div class="grid3">
+            <div><label for="kName">Ime in priimek</label><input id="kName" required maxlength="60"></div>
+            <div><label for="kPhone">Telefon</label><input id="kPhone" maxlength="20"></div>
+            <div><label for="kHours">Število ur</label><input id="kHours" type="number" min="1" max="200" value="10"></div>
+          </div>
+          <label for="kNote">Opomba</label><input id="kNote" maxlength="120">
+          <div class="err" id="kErr"></div><div class="ok" id="kOk"></div>
+          <button type="submit">Ustvari kartico</button>
+        </form>
+      </div>
+      <div class="box">
+        <div class="top" style="margin-bottom:8px"><h2 style="margin:0">Kartice</h2><button class="ghost" id="kRefresh" type="button">Osveži</button></div>
+        <div id="cardList" class="muted">Nalagam …</div>
+      </div>
+    </div>
     <div id="tab-pri" style="display:none">
       <div class="box">
         <div class="top" style="margin-bottom:8px"><h2 style="margin:0">Prijave na turnirje</h2><button class="ghost" id="sRefresh">Osveži</button></div>
@@ -197,8 +234,8 @@ $("bStart").value="420"; $("bEnd").value="1440";
 
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{
   document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("on",x===t));
-  ["rez","tur","nov","pri","sta"].forEach(k=>$("tab-"+k).style.display = k===t.dataset.tab ? "block":"none");
-  if(t.dataset.tab==="tur") loadBlocks(); if(t.dataset.tab==="nov") loadNews(); if(t.dataset.tab==="rez") load(); if(t.dataset.tab==="pri") loadSignups(); if(t.dataset.tab==="sta") loadStats();
+  ["rez","tur","nov","pri","sta","kar"].forEach(k=>$("tab-"+k).style.display = k===t.dataset.tab ? "block":"none");
+  if(t.dataset.tab==="tur") loadBlocks(); if(t.dataset.tab==="nov") loadNews(); if(t.dataset.tab==="rez") load(); if(t.dataset.tab==="pri") loadSignups(); if(t.dataset.tab==="sta") loadStats(); if(t.dataset.tab==="kar") loadCards();
 });
 
 async function show(){
@@ -358,6 +395,78 @@ async function loadSignups(){
   });
 }
 $("sRefresh").onclick = loadSignups;
+
+// ---- mokro igrišče ----
+(function(){
+  for (let m=420; m<=1440; m+=30) {
+    if (m<1440) { const o=document.createElement("option"); o.value=m; o.textContent=hm(m); $("wFrom").appendChild(o); }
+    if (m>420) { const o=document.createElement("option"); o.value=m; o.textContent=hm(m); $("wTo").appendChild(o); }
+  }
+  const now=new Date(); let f=Math.floor((now.getHours()*60+now.getMinutes())/30)*30; f=Math.min(Math.max(420,f),1410);
+  $("wDate").value=today(); $("wFrom").value=String(f); $("wTo").value=String(Math.min(1440,f+180));
+  let armed=false;
+  $("wBtn").onclick=async()=>{
+    $("wErr").textContent=""; $("wOk").textContent="";
+    const s=Number($("wFrom").value), e=Number($("wTo").value), courts=[1,2].filter(c=>$("wC"+c).checked);
+    if(e<=s){ $("wErr").textContent="Ura »do« mora biti za uro »od«."; return; }
+    if(!courts.length){ $("wErr").textContent="Izberi vsaj eno igrišče."; return; }
+    if(!armed){ armed=true; $("wBtn").textContent="Potrdi: zapri in prekliči rezervacije"; setTimeout(()=>{armed=false;$("wBtn").textContent="Zapri igrišče";},4000); return; }
+    armed=false; $("wBtn").textContent="Zapri igrišče"; $("wBtn").disabled=true;
+    const { data, error } = await sb.rpc("admin_close_courts",{ p_date:$("wDate").value, p_start_min:s, p_end_min:e, p_courts:courts, p_title:$("wTitle").value.trim() });
+    $("wBtn").disabled=false;
+    if(error){ $("wErr").textContent="Zapiranje ni uspelo."; console.log(error); return; }
+    $("wOk").textContent="Igrišče "+courts.join(" in ")+" je zaprto "+niceDate($("wDate").value)+" od "+hm(s)+" do "+hm(e)+".";
+    const box=$("wList"); box.innerHTML="";
+    const list=data||[];
+    if(!list.length){ box.appendChild(Object.assign(document.createElement("p"),{className:"muted",textContent:"V tem času ni bilo rezervacij."})); return; }
+    box.appendChild(Object.assign(document.createElement("b"),{textContent:"Preklicane rezervacije – obvesti te ljudi:"}));
+    list.forEach(b=>{
+      const d=document.createElement("div"); d.className="item";
+      const l=document.createElement("div"); l.textContent=hm(b.start_min)+"–"+hm(b.start_min+b.dur_min)+" · igrišče "+b.court+" · "+b.name+(b.email?" · "+b.email:"");
+      d.appendChild(l);
+      if(b.phone && b.phone!=="000000"){ const a=document.createElement("a"); a.href="tel:"+b.phone.replace(/[^0-9+]/g,""); a.textContent="📞 "+b.phone; a.style.fontWeight="600"; d.appendChild(a); }
+      box.appendChild(d);
+    });
+    load();
+  };
+})();
+
+// ---- kartice ----
+function newCode(){ const A="ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; const r=new Uint32Array(6); crypto.getRandomValues(r); return "OB-"+[...r].map(x=>A[x%A.length]).join(""); }
+const fh=m=>{ const h=Math.floor(m/60), r=m%60; return (h?h+" h":"")+(h&&r?" ":"")+(r?r+" min":"")||"0 h"; };
+async function loadCards(){
+  const box=$("cardList");
+  const { data, error } = await sb.from("cards").select("*").order("created_at",{ascending:false});
+  if(error){ box.textContent="Napaka pri nalaganju."; console.log(error); return; }
+  box.innerHTML=""; box.className="";
+  if(!data.length){ box.className="muted"; box.textContent="Še ni kartic."; return; }
+  data.forEach(c=>{
+    const it=document.createElement("div"); it.className="item";
+    const l=document.createElement("div");
+    const t=document.createElement("b"); t.textContent=c.name; l.appendChild(t);
+    const code=document.createElement("span"); code.className="pill"; code.style.fontFamily="monospace"; code.style.fontSize="14px"; code.textContent=c.code; l.appendChild(code);
+    const m=document.createElement("div"); m.className="muted"; m.textContent="Ostane "+fh(c.total_min-c.used_min)+" od "+fh(c.total_min)+(c.phone?" · "+c.phone:"")+(c.note?" · "+c.note:""); l.appendChild(m);
+    const r=document.createElement("div"); r.style.cssText="display:flex;gap:8px;align-items:center;flex-wrap:wrap";
+    const inp=document.createElement("input"); inp.type="number"; inp.min="1"; inp.max="200"; inp.value="10"; inp.style.width="80px";
+    const add=document.createElement("button"); add.className="ghost"; add.textContent="+ ure"; add.style.padding="6px 12px";
+    add.onclick=async()=>{ const h=Math.round(Number(inp.value)); if(!(h>0)) return; await sb.from("cards").update({ total_min:c.total_min+h*60 }).eq("id",c.id); loadCards(); };
+    const x=document.createElement("button"); x.className="del"; x.textContent="Izbriši"; confirmBtn(x, async()=>{ await sb.from("cards").delete().eq("id",c.id); loadCards(); });
+    r.appendChild(inp); r.appendChild(add); r.appendChild(x);
+    it.appendChild(l); it.appendChild(r); box.appendChild(it);
+  });
+}
+$("kRefresh").onclick=loadCards;
+$("cardForm").addEventListener("submit", async e=>{
+  e.preventDefault(); $("kErr").textContent=""; $("kOk").textContent="";
+  const hrs=Math.round(Number($("kHours").value)||0); if(hrs<1){ $("kErr").textContent="Vpiši število ur."; return; }
+  let ok=false, code;
+  for(let i=0;i<3&&!ok;i++){ code=newCode();
+    const { error } = await sb.from("cards").insert({ code, name:$("kName").value.trim(), phone:$("kPhone").value.trim()||null, note:$("kNote").value.trim()||null, total_min:hrs*60 });
+    if(!error) ok=true; else if(!/duplicate|unique/i.test(error.message||"")){ $("kErr").textContent="Kartice ni bilo mogoče ustvariti."; console.log(error); return; } }
+  $("kOk").textContent="Kartica ustvarjena. Številka kartice: "+code+" ("+hrs+" ur) – zapiši jo stranki.";
+  $("kName").value=""; $("kPhone").value=""; $("kNote").value=""; $("kHours").value="10";
+  loadCards();
+});
 
 async function loadStats(){
   const box=$("stBody"); box.textContent="Nalagam …";

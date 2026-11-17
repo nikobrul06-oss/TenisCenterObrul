@@ -1,4 +1,4 @@
-// Rezervacije – ŠRD Straža, Tenis center Obrul (v4: sezonsko zaprtje)
+// Rezervacije – ŠRD Straža, Tenis center Obrul (v5: danes prosto, kartice)
 const COURTS = [
   { id: 1, name: "Igrišče 1", sub: "z reflektorji" },
   { id: 2, name: "Igrišče 2", sub: "z reflektorji" }
@@ -60,6 +60,35 @@ function applySeason() {
   }
   bk.classList.toggle("is-closed", all);
   if (!all && selectedDate < season.closed_until && !applySeason.moved) { selectedDate = season.closed_until; applySeason.moved = true; }
+}
+
+function renderTodayFree() {
+  const box = $("todayFree"); if (!box) return;
+  const t = ymd(new Date());
+  if (seasonOn() && t < season.closed_until) { box.style.display = "none"; return; }
+  const now = new Date(); let from = Math.ceil((now.getHours() * 60 + now.getMinutes() + 1) / STEP) * STEP; from = Math.max(OPEN, from);
+  const runs = [];
+  COURTS.forEach(c => {
+    let s = null;
+    for (let m = from; m <= CLOSE; m += STEP) {
+      const free = m < CLOSE && !taken.has(key(t, c.id, m / STEP)) && !blockAt(t, c.id, m);
+      if (free && s === null) s = m;
+      if (!free && s !== null) { if (m - s >= 60) runs.push({ court: c.id, s, e: m }); s = null; }
+    }
+  });
+  runs.sort((x, y) => x.s - y.s || x.court - y.court);
+  const chips = $("tfChips"); chips.innerHTML = "";
+  if (!runs.length) {
+    if (from >= CLOSE - 60) { box.style.display = "none"; return; }
+    chips.appendChild(Object.assign(document.createElement("span"), { className: "none", textContent: "Danes ni več prostih terminov – poglej jutri." }));
+  }
+  runs.slice(0, 5).forEach(r => {
+    const b = document.createElement("button"); b.type = "button";
+    b.textContent = "Igrišče " + r.court + " · " + hm(r.s) + "–" + hm(r.e);
+    b.onclick = () => { selectedDate = t; renderDays(); renderGrid(); openBook(t, r.court, r.s); };
+    chips.appendChild(b);
+  });
+  box.style.display = "block";
 }
 
 function renderDays() {
@@ -144,8 +173,10 @@ function updateSummary() {
   if (!pending || pending.manage) return;
   const dur = Number($("fDur").value), weeks = Number($("fRepeat").value);
   const c = COURTS.find(x => x.id === pending.court);
+  const cardOn = $("fCard") && $("fCard").value.trim();
   $("mWhen").textContent = prettyDate(pending.date) + " · " + hm(pending.start) + "–" + hm(pending.start + dur) + " · " + c.name;
-  $("fPrice").textContent = "Cena: " + price(dur) + (weeks > 1 ? " na termin × " + weeks + " tednov" : "") +
+  $("fPrice").textContent = cardOn ? "Plačilo s kartico: odšteje se " + durLabel(dur * weeks) + (pending.start + dur > 17 * 60 ? " (reflektorji 2 €/h, če je temno, se plačajo posebej)" : "")
+    : "Cena: " + price(dur) + (weeks > 1 ? " na termin × " + weeks + " tednov" : "") +
     (pending.start + dur > 17 * 60 ? " + reflektorji (2 €/h), če je temno" : "");
 }
 
@@ -163,11 +194,12 @@ function openBook(date, court, start) {
   $("adminBox").innerHTML = ""; $("fields").style.display = "block";
   $("mSubmit").textContent = "Potrdi rezervacijo";
   $("mErr").textContent = "";
-  try { const s = JSON.parse(localStorage.getItem("obrul_contact") || "{}"); if (s.name) $("fName").value = s.name; if (s.phone) $("fPhone").value = s.phone; if (s.email) $("fEmail").value = s.email; } catch (e) {}
+  try { const s = JSON.parse(localStorage.getItem("obrul_contact") || "{}"); if (s.name) $("fName").value = s.name; if (s.phone) $("fPhone").value = s.phone; if (s.email) $("fEmail").value = s.email; if ($("fCard")) $("fCard").value = s.card || ""; } catch (e) {}
   updateSummary();
   $("overlay").classList.add("open"); setTimeout(() => $("fName").focus(), 50);
 }
 $("fDur").addEventListener("change", updateSummary);
+if ($("fCard")) $("fCard").addEventListener("input", updateSummary);
 $("fRepeat").addEventListener("change", updateSummary);
 
 function openManage(id) {
@@ -198,15 +230,16 @@ $("form").addEventListener("submit", async e => {
     if (!/^[+0-9 ()\/-]{6,20}$/.test(phone)) { $("mErr").textContent = "Vpiši veljavno telefonsko številko."; return; }
     if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { $("mErr").textContent = "Vpiši veljaven e-naslov ali pusti polje prazno."; return; }
     if (!dur) { $("mErr").textContent = "Izberi trajanje."; return; }
-    try { localStorage.setItem("obrul_contact", JSON.stringify({ name, phone, email })); } catch (e) {}
+    const card = ($("fCard") && $("fCard").value.trim().toUpperCase()) || "";
+    try { localStorage.setItem("obrul_contact", JSON.stringify({ name, phone, email, card })); } catch (e) {}
     const p = pending;
     let res;
     if (sb) {
-      const { data, error } = await sb.rpc("book", {
+      const { data, error } = await sb.rpc(card ? "book_with_card" : "book", Object.assign(card ? { p_code: card } : {}, {
         p_date: p.date, p_court: p.court, p_start_min: p.start, p_dur_min: dur,
         p_name: name, p_phone: phone, p_players: Number($("fPlayers").value), p_note: $("fNote").value.trim(),
         p_email: email || null, p_weeks: weeks
-      });
+      }));
       if (error) throw new Error(error.message || "napaka");
       res = data;
     } else {
@@ -224,11 +257,12 @@ $("form").addEventListener("submit", async e => {
     let msg = n > 1 ? "Rezerviranih terminov: " + n + " ✓" : "Termin je rezerviran ✓";
     if (sk.length) msg += " · Ni bilo mogoče: " + sk.map(s => shortDate(s.date)).join(", ");
     if (email) msg += " · Potrditev je poslana na " + email;
+    if (res.card_left_min != null) msg += " · Na kartici ostane " + durLabel(res.card_left_min || 0).replace(/^$/, "0 h");
     toast(msg, sk.length || email ? 6000 : 2600);
   } catch (err) {
     console.log(err);
     const m = (err && err.message) || "";
-    const known = /zaseden|turnir|največ 2|mimo|14 dni|e-naslov|zaprta/i.test(m);
+    const known = /zaseden|turnir|največ 2|mimo|14 dni|e-naslov|zaprta|kartic/i.test(m);
     $("mErr").textContent = known ? m.replace(/^.*?: /, "") : "Rezervacija ni uspela. Poskusi znova ali pokliči 031 528 978.";
     if (/zaseden|turnir/i.test(m)) await loadSlots();
   } finally { btn.disabled = false; }
@@ -261,6 +295,7 @@ async function loadSlots() {
   blocks = b.error ? [] : (b.data || []);
   season = st && !st.error ? st.data : null;
   applySeason();
+  renderTodayFree();
   $("status").textContent = "Termini se osvežujejo samodejno.";
   renderDays(); renderGrid();
 }
@@ -276,6 +311,15 @@ async function loadNews() {
     box.style.display = "block";
   }
 }
+
+if ($("ccBtn")) $("ccBtn").onclick = async () => {
+  const code = $("ccCode").value.trim(), out = $("ccOut");
+  if (!code || !sb) { out.textContent = "Vpiši številko kartice."; return; }
+  out.textContent = "…";
+  const { data, error } = await sb.rpc("card_info", { p_code: code });
+  if (error || !data) { out.textContent = "Kartica s to številko ne obstaja."; return; }
+  out.textContent = data.name + ": ostane še " + (durLabel(data.left_min) || "0 h") + " od " + durLabel(data.total_min) + ".";
+};
 
 renderDays(); renderGrid();
 if (!sb) {
